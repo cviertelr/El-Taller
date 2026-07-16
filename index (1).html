@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0c0a11">
+<title>El Taller</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Spectral:ital,wght@0,300;0,400;0,500;1,300;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --obsidiana:#0c0a11;
+  --piedra:#151020;
+  --piedra2:#1c1530;
+  --borde:#2b2244;
+  --borde-suave:#221b38;
+  --pergamino:#e9e1cf;
+  --ceniza:#93899f;
+  --purpura:#9a6fd0;
+  --purpura-h:#6b4a99;
+  --purpura-oscuro:#3a2b5c;
+  --verde:#5f9971;
+  --verde-oscuro:#2c4636;
+  --oro:#c8a668;
+  --rojo-suave:#b06060;
+  --display:'Cormorant Garamond',serif;
+  --cuerpo:'Spectral',serif;
+  --mono:'IBM Plex Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  background:var(--obsidiana);
+  color:var(--pergamino);
+  font-family:var(--cuerpo);
+  font-weight:300;
+  line-height:1.65;
+  font-size:16px;
+  padding-bottom:calc(76px + env(safe-area-inset-bottom));
+  min-height:100vh;
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(107,74,153,.14), transparent 60%),
+    radial-gradient(ellipse 60% 40% at 90% 110%, rgba(95,153,113,.07), transparent 60%);
+}
+main{position:relative;z-index:1;max-width:680px;margin:0 auto;padding:0 20px}
+a{color:var(--purpura)}
+button{font-family:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--oro);outline-offset:2px;border-radius:2px}
+
+/* ---------- tipografía ---------- */
+.eyebrow{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--oro);margin-bottom:8px;
+}
+h1{font-family:var(--display);font-weight:500;font-size:34px;line-height:1.1;letter-spacing:.01em}
+h2{font-family:var(--display);font-weight:500;font-size:26px;line-height:1.15;margin-bottom:6px}
+h3{font-family:var(--display);font-weight:600;font-size:19px;line-height:1.2}
+.lede{color:var(--ceniza);font-size:15px;max-width:52ch}
+.firma{font-family:var(--display);font-style:italic;color:var(--oro);font-size:16px;margin-top:14px}
+
+/* ---------- cabecera ---------- */
+header.cima{
+  position:relative;z-index:1;max-width:680px;margin:0 auto;
+  padding:26px 20px 6px;display:flex;align-items:baseline;justify-content:space-between;
+}
+header.cima .marca{font-family:var(--display);font-size:20px;letter-spacing:.06em}
+header.cima .marca span{color:var(--purpura)}
+header.cima .grado-chip{
+  font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--ceniza);border:1px solid var(--borde);padding:5px 10px;border-radius:99px;
+}
+
+/* ---------- vistas ---------- */
+.vista{display:none;padding-top:18px;animation:aparecer .35s ease both}
+.vista.on{display:block}
+@keyframes aparecer{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.bloque{margin-bottom:34px}
+
+/* ---------- piedra (SVG héroe) ---------- */
+.piedra-marco{display:flex;gap:22px;align-items:center;margin:10px 0 22px}
+.piedra-svg{width:118px;height:118px;flex:none;filter:drop-shadow(0 6px 24px rgba(154,111,208,.18))}
+@media (prefers-reduced-motion: no-preference){
+  .piedra-svg{animation:flotar 7s ease-in-out infinite}
+  @keyframes flotar{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+}
+.piedra-texto h1{margin-bottom:2px}
+.piedra-texto .lema{font-family:var(--display);font-style:italic;color:var(--ceniza);font-size:16px}
+.piedra-texto .pct{font-family:var(--mono);font-size:11px;color:var(--oro);letter-spacing:.14em;margin-top:6px}
+
+/* ---------- tablero ---------- */
+.tablero{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media (max-width:480px){.tablero{grid-template-columns:repeat(2,1fr)}}
+.metrica{
+  background:var(--piedra);border:1px solid var(--borde-suave);border-radius:10px;
+  padding:14px 12px 12px;text-align:center;
+}
+.metrica .n{font-family:var(--display);font-size:30px;font-weight:500;line-height:1;color:var(--pergamino)}
+.metrica .n small{font-size:15px;color:var(--ceniza)}
+.metrica .et{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ceniza);margin-top:7px}
+.brecha-frase{margin-top:14px;font-style:italic;color:var(--ceniza);font-size:14.5px;border-left:2px solid var(--purpura-oscuro);padding-left:12px}
+
+/* ---------- barras de grado ---------- */
+.grados-lista{display:flex;flex-direction:column;gap:12px;margin-top:18px}
+.grado-fila{background:var(--piedra);border:1px solid var(--borde-suave);border-radius:10px;padding:13px 14px}
+.grado-fila .arriba{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+.grado-fila .nom{font-family:var(--display);font-size:17px;font-weight:600}
+.grado-fila .nom i{font-weight:400;color:var(--ceniza);font-size:14px;margin-left:6px}
+.grado-fila .sello{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ceniza)}
+.grado-fila.activo .sello{color:var(--verde)}
+.grado-fila.completo .sello{color:var(--oro)}
+.barra{height:5px;background:var(--piedra2);border-radius:99px;overflow:hidden}
+.barra i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--purpura-h),var(--purpura));border-radius:99px;transition:width .7s cubic-bezier(.2,.8,.2,1)}
+.grado-fila.completo .barra i{background:linear-gradient(90deg,var(--verde-oscuro),var(--verde))}
+
+/* ---------- gráfico de brecha ---------- */
+.chart-caja{background:var(--piedra);border:1px solid var(--borde-suave);border-radius:10px;padding:16px 14px 10px;overflow-x:auto}
+.chart-caja svg{display:block;min-width:100%}
+.leyenda{display:flex;gap:18px;margin-top:8px;font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ceniza)}
+.leyenda .cu{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+
+/* ---------- pestañas ---------- */
+.pestanas{display:flex;gap:8px;margin:14px 0 18px;flex-wrap:wrap}
+.pest{
+  background:none;border:1px solid var(--borde);color:var(--ceniza);
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
+  padding:8px 14px;border-radius:99px;transition:all .2s;
+}
+.pest.on{border-color:var(--purpura);color:var(--pergamino);background:rgba(154,111,208,.1)}
+.pest:disabled{opacity:.38;cursor:not-allowed}
+.pest .candado{margin-left:5px}
+
+/* ---------- tarjetas de trabajo ---------- */
+.trabajos{display:flex;flex-direction:column;gap:12px}
+.trabajo{
+  background:var(--piedra);border:1px solid var(--borde-suave);border-radius:12px;
+  overflow:hidden;transition:border-color .25s;
+}
+.trabajo.abierto-t{border-color:var(--purpura-h)}
+.trabajo.cerrado-t{border-color:var(--verde-oscuro)}
+.trabajo>button.cabeza{
+  width:100%;background:none;border:0;color:inherit;text-align:left;
+  display:flex;align-items:center;gap:13px;padding:15px 16px;
+}
+.num-romano{
+  font-family:var(--display);font-size:15px;color:var(--ceniza);width:30px;flex:none;
+  font-style:italic;
+}
+.trabajo.cerrado-t .num-romano{color:var(--verde)}
+.cabeza .tit{flex:1}
+.cabeza .tit .t{font-family:var(--display);font-size:18px;font-weight:600;line-height:1.2}
+.cabeza .tit .en{font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--ceniza);margin-top:3px}
+.estado-pip{font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--ceniza);flex:none}
+.trabajo.abierto-t .estado-pip{color:var(--purpura)}
+.trabajo.cerrado-t .estado-pip{color:var(--verde)}
+.cuerpo-t{display:none;padding:0 16px 18px 59px;border-top:1px dashed var(--borde-suave)}
+@media (max-width:480px){.cuerpo-t{padding-left:16px}}
+.trabajo.exp .cuerpo-t{display:block;padding-top:14px}
+.consigna{font-size:15px;color:var(--pergamino)}
+.consigna em{color:var(--oro);font-style:italic}
+
+/* pasos del ritual */
+.paso{margin-top:16px}
+.paso .paso-et{font-family:var(--mono);font-size:9.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--ceniza);margin-bottom:8px}
+.rango-fila{display:flex;align-items:center;gap:14px}
+input[type=range]{
+  flex:1;-webkit-appearance:none;appearance:none;height:4px;border-radius:99px;
+  background:linear-gradient(90deg,var(--verde-oscuro),var(--purpura-h),var(--rojo-suave));outline-offset:4px;
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:22px;height:22px;border-radius:50%;
+  background:var(--pergamino);border:2px solid var(--purpura);cursor:grab;
+}
+input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--pergamino);border:2px solid var(--purpura);cursor:grab}
+.rango-num{font-family:var(--display);font-size:26px;width:36px;text-align:center;font-weight:500}
+textarea.nota{
+  width:100%;background:var(--piedra2);border:1px solid var(--borde);border-radius:8px;
+  color:var(--pergamino);font-family:var(--cuerpo);font-size:14px;padding:10px 12px;
+  min-height:64px;resize:vertical;
+}
+textarea.nota::placeholder{color:var(--ceniza);font-style:italic}
+.btn{
+  display:inline-block;background:linear-gradient(135deg,var(--purpura-h),var(--purpura));
+  color:#fff;border:0;border-radius:8px;padding:11px 20px;
+  font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  margin-top:14px;transition:transform .15s, box-shadow .15s;
+}
+.btn:active{transform:scale(.97)}
+.btn.verde{background:linear-gradient(135deg,var(--verde-oscuro),var(--verde))}
+.btn.fantasma{background:none;border:1px solid var(--borde);color:var(--ceniza)}
+.btn.peligro{background:none;border:1px solid var(--rojo-suave);color:var(--rojo-suave)}
+.veredicto{
+  margin-top:14px;padding:12px 14px;border-radius:8px;background:var(--piedra2);
+  border-left:2px solid var(--oro);font-style:italic;font-size:14.5px;color:var(--pergamino);
+}
+.veredicto .datos{font-family:var(--mono);font-style:normal;font-size:10.5px;letter-spacing:.1em;color:var(--ceniza);display:block;margin-top:6px}
+.pred-fija{font-family:var(--mono);font-size:11px;color:var(--purpura);letter-spacing:.1em;margin-top:4px}
+
+/* candado de grado */
+.grado-cerrado{
+  text-align:center;padding:44px 20px;border:1px dashed var(--borde);border-radius:12px;color:var(--ceniza)
+}
+.grado-cerrado .cand{font-size:26px;display:block;margin-bottom:10px;opacity:.7}
+.grado-cerrado .req{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;margin-top:8px;color:var(--oro)}
+
+/* ---------- biblioteca ---------- */
+.ficha,.libro{
+  background:var(--piedra);border:1px solid var(--borde-suave);border-radius:12px;
+  margin-bottom:12px;overflow:hidden;
+}
+.ficha{border-left:2px solid var(--oro)}
+.ficha>button.cabeza-b,.libro>button.cabeza-b{
+  width:100%;background:none;border:0;color:inherit;text-align:left;
+  padding:14px 16px;display:flex;gap:12px;align-items:baseline;
+}
+.cabeza-b .marca-b{font-family:var(--display);font-style:italic;color:var(--oro);font-size:14px;flex:none;width:22px}
+.cabeza-b .tt{font-family:var(--display);font-size:17px;font-weight:600;line-height:1.25}
+.cabeza-b .au{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ceniza);margin-top:3px}
+.cabeza-b .flecha{margin-left:auto;color:var(--ceniza);transition:transform .25s;flex:none}
+.exp>.cabeza-b .flecha{transform:rotate(90deg)}
+.cuerpo-b{display:none;padding:0 16px 16px 50px;font-size:14.5px}
+@media (max-width:480px){.cuerpo-b{padding-left:16px}}
+.exp>.cuerpo-b{display:block}
+.cuerpo-b .pq{color:var(--pergamino)}
+.cuerpo-b .uso{margin-top:10px;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;color:var(--verde)}
+.cuerpo-b p+p{margin-top:10px}
+.sub-biblio{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ceniza);margin:22px 0 12px}
+
+/* ---------- ajuar ---------- */
+.ajuar-caja{background:var(--piedra);border:1px solid var(--borde-suave);border-radius:12px;padding:18px 16px;margin-bottom:14px}
+.ajuar-caja h3{margin-bottom:6px}
+.ajuar-caja .desc{color:var(--ceniza);font-size:14px}
+textarea.jsonio{
+  width:100%;background:var(--piedra2);border:1px solid var(--borde);border-radius:8px;
+  color:var(--ceniza);font-family:var(--mono);font-size:11px;padding:10px;min-height:88px;margin-top:12px;resize:vertical;
+}
+.siembra-fila{display:grid;grid-template-columns:1fr 64px 64px;gap:8px;align-items:center;margin-top:10px}
+.siembra-fila label{font-size:13.5px;display:flex;gap:8px;align-items:center;color:var(--pergamino)}
+.siembra-fila input[type=checkbox]{width:16px;height:16px;accent-color:var(--verde)}
+.siembra-fila input[type=number]{
+  background:var(--piedra2);border:1px solid var(--borde);border-radius:6px;color:var(--pergamino);
+  font-family:var(--mono);font-size:13px;padding:7px 6px;text-align:center;width:100%;
+}
+.siembra-cabecera{display:grid;grid-template-columns:1fr 64px 64px;gap:8px;font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ceniza);margin-top:14px}
+
+/* ---------- navegación inferior ---------- */
+nav.abajo{
+  position:fixed;bottom:0;left:0;right:0;z-index:50;
+  background:rgba(12,10,17,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border-top:1px solid var(--borde-suave);
+  padding-bottom:env(safe-area-inset-bottom);
+}
+nav.abajo .fila{max-width:680px;margin:0 auto;display:flex}
+nav.abajo button{
+  flex:1;background:none;border:0;color:var(--ceniza);padding:11px 4px 9px;
+  font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;
+  display:flex;flex-direction:column;align-items:center;gap:5px;transition:color .2s;
+}
+nav.abajo button svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.5}
+nav.abajo button.on{color:var(--pergamino)}
+nav.abajo button.on svg{stroke:var(--purpura)}
+
+/* ---------- toast ---------- */
+#toasts{position:fixed;bottom:calc(84px + env(safe-area-inset-bottom));left:0;right:0;z-index:60;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none;padding:0 20px}
+.toast{
+  background:var(--piedra2);border:1px solid var(--purpura-h);border-radius:10px;
+  padding:12px 18px;max-width:420px;font-style:italic;font-size:14px;color:var(--pergamino);
+  box-shadow:0 8px 30px rgba(0,0,0,.5);animation:subir .35s ease both;text-align:center;
+}
+.toast .quien{display:block;font-family:var(--mono);font-style:normal;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--oro);margin-top:6px}
+@keyframes subir{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+/* ---------- bienvenida ---------- */
+#velo{
+  position:fixed;inset:0;z-index:100;background:rgba(12,10,17,.96);
+  display:none;align-items:center;justify-content:center;padding:24px;
+}
+#velo.on{display:flex}
+#velo .puerta{max-width:440px;text-align:center}
+#velo .puerta .simbolo{font-family:var(--display);font-size:40px;color:var(--purpura);margin-bottom:14px}
+#velo .puerta p{color:var(--ceniza);margin-top:12px;font-size:15px}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="cima">
+  <div class="marca">El <span>Taller</span></div>
+  <div class="grado-chip" id="chipGrado">Aprendiz</div>
+</header>
+
+<main>
+
+<!-- ══════════ VISTA: REGISTRO ══════════ -->
+<section class="vista on" id="v-registro">
+  <div class="piedra-marco">
+    <svg class="piedra-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <linearGradient id="gBruta" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#2a2140"/><stop offset="1" stop-color="#171126"/>
+        </linearGradient>
+        <linearGradient id="gTapa" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#9a6fd0"/><stop offset="1" stop-color="#6b4a99"/>
+        </linearGradient>
+        <linearGradient id="gDer" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#4a3670"/><stop offset="1" stop-color="#2e2248"/>
+        </linearGradient>
+        <linearGradient id="gIzq" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#3a2b5c"/><stop offset="1" stop-color="#231a3a"/>
+        </linearGradient>
+      </defs>
+      <g id="svgBruta" opacity="1">
+        <path d="M100,32 L147,54 L166,96 L152,146 L106,172 L54,152 L33,102 L49,58 Z" fill="url(#gBruta)" stroke="#4a3670" stroke-width="1.5"/>
+        <path d="M75,70 L112,88 M96,120 L130,105 M60,110 L88,132" stroke="#4a3670" stroke-width="1" opacity=".6"/>
+      </g>
+      <g id="svgCubo" opacity="0">
+        <polygon points="100,40 160,70 100,100 40,70" fill="url(#gTapa)"/>
+        <polygon points="100,100 160,70 160,140 100,170" fill="url(#gDer)"/>
+        <polygon points="40,70 100,100 100,170 40,140" fill="url(#gIzq)"/>
+        <polyline points="40,70 100,40 160,70 100,100 40,70 40,140 100,170 160,140 160,70" fill="none" stroke="#c8a668" stroke-width="1" opacity=".55"/>
+        <line x1="100" y1="100" x2="100" y2="170" stroke="#c8a668" stroke-width="1" opacity=".55"/>
+      </g>
+    </svg>
+    <div class="piedra-texto">
+      <p class="eyebrow">El registro</p>
+      <h1 id="tituloGrado">Grado de Aprendiz</h1>
+      <div class="lema" id="lemaGrado">Sostener el cincel</div>
+      <div class="pct" id="pctPiedra">Piedra bruta · 0 de 21 trabajos</div>
+    </div>
+  </div>
+
+  <div class="tablero">
+    <div class="metrica"><div class="n" id="mHechos">0<small>/21</small></div><div class="et">Trabajos cerrados</div></div>
+    <div class="metrica"><div class="n" id="mRacha">0</div><div class="et">Racha de días</div></div>
+    <div class="metrica"><div class="n" id="mPred">—</div><div class="et">Miedo predicho</div></div>
+    <div class="metrica"><div class="n" id="mReal">—</div><div class="et">Miedo real</div></div>
+  </div>
+  <p class="brecha-frase" id="brechaFrase">Aún no hay piedra labrada. La primera medición ocurre cuando cierras tu primer trabajo.</p>
+
+  <div class="bloque" style="margin-top:26px">
+    <p class="eyebrow">La brecha</p>
+    <h2>Lo que predijiste contra lo que fue</h2>
+    <p class="lede" style="margin-bottom:14px">Cada par de barras es un trabajo cerrado. La distancia entre ambas es la prueba, en números, de cuánto exagera el perro que ladra.</p>
+    <div class="chart-caja">
+      <div id="chartVacio" class="lede" style="text-align:center;padding:18px 0">El gráfico se dibuja con tu primer trabajo cerrado.</div>
+      <svg id="chartBrecha" style="display:none" xmlns="http://www.w3.org/2000/svg"></svg>
+      <div class="leyenda" id="chartLeyenda" style="display:none">
+        <span><i class="cu" style="border:1.5px solid var(--oro)"></i>Predicho</span>
+        <span><i class="cu" style="background:var(--purpura)"></i>Real</span>
+        <span><i class="cu" style="background:var(--verde)"></i>Real (menor)</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="bloque">
+    <p class="eyebrow">Los tres grados</p>
+    <h2>El avance de la obra</h2>
+    <div class="grados-lista" id="gradosLista"></div>
+  </div>
+
+  <div class="bloque">
+    <p class="eyebrow">Carta del Cantero</p>
+    <div class="brecha-frase" style="border-left-color:var(--oro)" id="cartaCantero"></div>
+  </div>
+</section>
+
+<!-- ══════════ VISTA: TRABAJOS ══════════ -->
+<section class="vista" id="v-trabajos">
+  <p class="eyebrow">Los trabajos</p>
+  <h2 id="tituloTrabajos">Sostener el cincel</h2>
+  <p class="lede" id="ledeTrabajos"></p>
+  <div class="pestanas" id="pestGrados"></div>
+  <div id="zonaTrabajos"></div>
+</section>
+
+<!-- ══════════ VISTA: BIBLIOTECA ══════════ -->
+<section class="vista" id="v-biblioteca">
+  <p class="eyebrow">La biblioteca</p>
+  <h2>Lo que se lee mientras se labra</h2>
+  <p class="lede">Cada grado tiene sus fichas —lecturas breves del Cantero, dentro de la app— y sus libros. No hace falta leerlo todo: un libro bien usado vale más que cinco acumulados.</p>
+  <div class="pestanas" id="pestBiblio"></div>
+  <div id="zonaBiblio"></div>
+</section>
+
+<!-- ══════════ VISTA: AJUAR ══════════ -->
+<section class="vista" id="v-ajuar">
+  <p class="eyebrow">El ajuar</p>
+  <h2>Las herramientas del registro</h2>
+  <p class="lede" style="margin-bottom:20px">Tu registro vive solo en este dispositivo. Nadie más lo ve, y por eso conviene guardarle copia.</p>
+
+  <div class="ajuar-caja">
+    <h3>Sembrar el grado de Aprendiz</h3>
+    <p class="desc">Si tu registro anterior no se cargó solo, márcalo aquí a mano: qué trabajos cerraste y qué miedo predijiste y mediste (0–10).</p>
+    <div class="siembra-cabecera"><span>Trabajo</span><span>Pred.</span><span>Real</span></div>
+    <div id="siembraFilas"></div>
+    <button class="btn" id="btnSembrar">Sembrar registro</button>
+  </div>
+
+  <div class="ajuar-caja">
+    <h3>Copia del registro</h3>
+    <p class="desc">Copia este texto y guárdalo donde quieras. Es tu registro completo.</p>
+    <textarea class="jsonio" id="exportaTxt" readonly></textarea>
+    <button class="btn fantasma" id="btnCopiar">Copiar al portapapeles</button>
+  </div>
+
+  <div class="ajuar-caja">
+    <h3>Restaurar desde copia</h3>
+    <p class="desc">Pega aquí una copia guardada y el registro vuelve tal como estaba.</p>
+    <textarea class="jsonio" id="importaTxt" placeholder='{"v":2, ...}'></textarea>
+    <button class="btn verde" id="btnRestaurar">Restaurar registro</button>
+  </div>
+
+  <div class="ajuar-caja">
+    <h3>Devolver la piedra a la cantera</h3>
+    <p class="desc">Borra todo el registro y empieza de cero. No se puede deshacer.</p>
+    <button class="btn peligro" id="btnReiniciar">Borrar todo el registro</button>
+  </div>
+</section>
+
+</main>
+
+<!-- navegación -->
+<nav class="abajo" aria-label="Secciones del taller">
+  <div class="fila">
+    <button data-v="registro" class="on" aria-label="Registro">
+      <svg viewBox="0 0 24 24"><path d="M4 20 L4 12 M10 20 L10 6 M16 20 L16 10 M22 20 L2 20"/></svg>
+      Registro
+    </button>
+    <button data-v="trabajos" aria-label="Trabajos">
+      <svg viewBox="0 0 24 24"><path d="M13 4 L20 11 L11 20 L4 20 L4 13 Z M13 4 L16 1 M20 11 L23 8"/></svg>
+      Trabajos
+    </button>
+    <button data-v="biblioteca" aria-label="Biblioteca">
+      <svg viewBox="0 0 24 24"><path d="M4 4 L10 4 L10 20 L4 20 Z M10 4 L16 4 L16 20 L10 20 Z M16 6 L21 5 L21 19 L16 20"/></svg>
+      Biblioteca
+    </button>
+    <button data-v="ajuar" aria-label="Ajuar">
+      <svg viewBox="0 0 24 24"><circle cx="9" cy="9" r="4"/><path d="M12 12 L20 20 M17 17 L20 14"/></svg>
+      Ajuar
+    </button>
+  </div>
+</nav>
+
+<div id="toasts" aria-live="polite"></div>
+
+<!-- bienvenida -->
+<div id="velo" role="dialog" aria-modal="true" aria-label="Bienvenida al taller">
+  <div class="puerta">
+    <div class="simbolo">◬</div>
+    <p class="eyebrow" style="text-align:center">El Taller · Segunda hechura</p>
+    <h2 style="font-size:30px">La piedra sigue aquí</h2>
+    <p>Tres grados, veintiún trabajos, una sola medida: cuánto miedo predices y cuánto fue de verdad. La piedra no desaparece. Cambia de forma.</p>
+    <p class="firma" style="text-align:center">— El Maestro Cantero</p>
+    <button class="btn" id="btnEntrar" style="margin-top:22px">Entrar al taller</button>
+  </div>
+</div>
+
+
+
+<script>
+(function(){
+"use strict";
+
+/* ════════ CONTENIDO ════════ */
+const GRADOS = {
+  ap:{nombre:"Aprendiz", lema:"Sostener el cincel", intro:"Siete trabajos breves, de menos a más. No son retos para impresionar a nadie: son mediciones. Cada uno te pide predecir cuánto vas a sufrir y después medir cuánto sufriste de verdad."},
+  co:{nombre:"Compañero", lema:"Asentar la piedra", intro:"El Aprendiz aprendió a golpear. El Compañero aprende a quedarse: sostener la conversación, el silencio, el error y la opinión propia — y a bajarle el filo a la vara con que se mide."},
+  ma:{nombre:"Maestro", lema:"La piedra cúbica", intro:"El grado fino: soltar el libreto, jugar el estatus a voluntad, atravesar el conflicto y, al final, regalar lo aprendido. El Maestro no guarda el oficio: lo transmite."}
+};
+const ORDEN = ["ap","co","ma"];
+const UMBRAL = 5; // trabajos para desbloquear el grado siguiente
+
+const TRABAJOS = {
+ap:[
+ {t:"Mapear la cantera", en:"Conocer el terreno antes de golpear",
+  c:"Escribe cinco situaciones sociales que evitas, de la más blanda a la más dura, y ponle a cada una el miedo que le predices (0–10). Esa lista es tu cantera: de ahí salen todos los trabajos que vienen."},
+ {t:"El saludo", en:"Iniciar contacto sin libreto",
+  c:"Saluda a tres personas mirándolas a los ojos — el chofer, el del quiosco, un vecino. Sin conversación obligatoria: solo el saludo, sostenido <em>un segundo más de lo cómodo</em>."},
+ {t:"Cazar la voz", en:"Separarte del crítico interno",
+  c:"Hoy la voz que negocia va a hablar: «mejor no», «para qué», «huele mal». Cázala tres veces y escríbela literal, palabra por palabra, en el momento. No la discutas todavía. Solo déjala fichada."},
+ {t:"Una pregunta", en:"Abrir sin garantías",
+  c:"Hazle una pregunta genuina a alguien con quien no tenías que hablar: una indicación, una recomendación, una opinión. Y quédate a escuchar la respuesta <em>completa</em>."},
+ {t:"El cumplido", en:"Dar sin escudo",
+  c:"Di un cumplido verdadero y específico a alguien, y sostén la respuesta sin rematar con un chiste. El humor puede venir después; primero que el cumplido llegue entero."},
+ {t:"La misión", en:"El truco de Don Carleone en la calle",
+  c:"Entra a un espacio social con un <em>para qué</em> concreto y una sola regla: suelta una muleta (el humo, las vueltas previas, el celular). Cumples la misión y puedes irte."},
+ {t:"El balance del Aprendiz", en:"Leer la piedra",
+  c:"Relee los números de tu semana. Escribe tres líneas: dónde la realidad fue más blanda que tu predicción, dónde no lo fue, y qué te dice eso del perro que ladra."}
+],
+co:[
+ {t:"La conversación que dura", en:"Permanecer",
+  c:"Sostén una conversación de al menos tres turnos por lado con alguien fuera de tu círculo. La regla: no buscar la salida en la primera pausa. La pausa no es la puerta."},
+ {t:"La voz, por escrito", en:"Juzgar al juez",
+  c:"Toma una frase que cazaste en Aprendiz. Escríbela arriba de la hoja y debajo, en dos columnas, la evidencia a favor y la evidencia en contra. Trabaja como fiscal honesto, no como abogado tuyo."},
+ {t:"El error a propósito", en:"Matar el perfeccionismo con las manos",
+  c:"Comete un fallo social menor <em>adrede</em>: pide algo que no venden, equivócate de nombre, trastabilla en la frase. Y quédate en la escena diez segundos más de lo que el cuerpo pide."},
+ {t:"La opinión propia", en:"Sostener tu peso",
+  c:"Di en voz alta una opinión que quizás no comparten — y no la suavices con un chiste en los cinco segundos siguientes. Que la opinión aterrice sola."},
+ {t:"El silencio habitado", en:"Soltar la muleta madre",
+  c:"En una conversación, deja correr tres segundos de silencio sin taparlos con humor. Cuenta. Respira. Que el otro lo llene, o que no lo llene nadie."},
+ {t:"La autocompasión medida", en:"Bajarle el filo a la vara",
+  c:"Después de una interacción de la que saliste rumiando, escribe lo que le dirías a un hermano de tu tribu que hubiera hecho <em>exactamente lo mismo</em>. Después léetelo a ti."},
+ {t:"La misión sostenida", en:"Resistencia del cincel",
+  c:"La misión de Aprendiz, versión larga: una sala más exigente, más tiempo adentro, cero muletas. El objetivo no es brillar. Es durar."}
+],
+ma:[
+ {t:"El estatus a voluntad", en:"El rol como herramienta, no como jaula",
+  c:"Juega estatus alto en una interacción (ocupa espacio, habla lento, sostén la mirada) y estatus bajo en otra (cede el paso, pregunta, sirve). A propósito, como ejercicio de Johnstone. Ninguno de los dos eres tú: los dos son tuyos."},
+ {t:"Sin libreto", en:"Lo opuesto a la misión",
+  c:"Entra a un espacio social sin misión, sin <em>para qué</em> preparado. Desnudo. Que la conversación se haga sola — o que no se haga. Ese también es un resultado válido del trabajo."},
+ {t:"La vulnerabilidad elegida", en:"Presencia — el valor que tú nombraste",
+  c:"Comparte con alguien de tu tribu chica algo verdadero y expuesto: un miedo, una pérdida, una duda. Sin ironía de salida. Ser visto, esta vez, a propósito."},
+ {t:"El «no» limpio", en:"Honestidad con filo suave",
+  c:"Declina algo que no quieres hacer. Una frase. Sin sobre-explicar, sin disolverlo en broma, sin culpa teatral. «No, gracias» es una oración completa."},
+ {t:"El conflicto sostenido", en:"Atravesar, no rodear",
+  c:"Discrepa de frente con alguien y quédate en la sala mientras dura la tensión. No busques el remate que descomprime. La tensión también se termina sola — mídelo."},
+ {t:"Tender un puente", en:"Lealtad activa",
+  c:"Si lo eliges — y solo si lo eliges —, acércate a una conexión que se enfrió. Un mensaje basta. El trabajo consiste en tender el puente, no en que lo crucen."},
+ {t:"Transmitir", en:"Cerrar el ciclo del cantero",
+  c:"Enseña lo que aprendiste: en tu mesa de juego, en el set, con alguien que pelea con su propio perro. El grado de Maestro no se guarda. Se regala."}
+]};
+
+const FICHAS = {
+ap:[
+ {t:"La jerarquía de exposición", cuerpo:"<p>Toma tu lista de la cantera y ordénala como escalera: abajo lo que te da un 3, arriba lo que te da un 9. La regla del oficio tiene tres partes.</p><p><strong>Uno:</strong> se empieza por el peldaño que asusta pero no paraliza — un 4 o un 5, nunca un 9. <strong>Dos:</strong> cada peldaño se repite hasta que aburra. El aburrimiento no es fracaso: es la señal de que el sistema de alarma recalibró. <strong>Tres:</strong> jamás se huye en el pico del miedo. Si te vas cuando el miedo está en 8, el cuerpo aprende «huir me salvó». Si te quedas dos minutos más, aprende «no había de qué salvarse». Esa es toda la técnica; el resto es constancia.</p>"},
+ {t:"Predecir y medir", cuerpo:"<p>El motor del taller es una sola pregunta hecha dos veces: ¿cuánto va a doler? y ¿cuánto dolió?</p><p>La mente ansiosa cobra un impuesto por adelantado: te hace pagar en sufrimiento anticipado un precio que la realidad casi nunca cobra entero. Al escribir la predicción <em>antes</em> y la medida <em>después</em>, ese impuesto queda a la vista, en números, trabajo tras trabajo. No tienes que creerme a mí ni creerle al perro: le vas a creer a tu propio registro. Contra la evidencia acumulada de tu propia mano, la catástrofe imaginada pierde el juicio.</p>"}
+],
+co:[
+ {t:"La voz no eres tú (defusión)", cuerpo:"<p>La técnica del grado: dejar de mirar <em>desde</em> el pensamiento y empezar a mirar <em>el</em> pensamiento.</p><p>Tres herramientas. <strong>Ponle nombre:</strong> «ahí está la voz que negocia» — nombrarla la convierte en objeto, y a los objetos se los observa. <strong>Antepón el marco:</strong> en vez de «voy a hacer el ridículo», di «estoy teniendo el pensamiento de que voy a hacer el ridículo». Son dos frases distintas: la primera es una sentencia, la segunda es un informe. <strong>Cámbiale la voz:</strong> repite la frase cazada con voz de trámite, de locutor de aeropuerto. El contenido no cambia; el poder sí. La voz puede seguir hablando — tú ya no eres el altavoz.</p>"},
+ {t:"El error como cincel", cuerpo:"<p>El perfeccionismo social vive de una contabilidad falsa: cree que cada error se anota en un libro público que todos releen. La evidencia dice otra cosa — la gente nota una fracción de lo que crees, y olvida casi todo lo que nota, porque está ocupada con su propio libro.</p><p>Por eso el trabajo del error a propósito: al fallar <em>adrede</em>, le quitas al error lo único que lo hacía terrible, que era llegar sin permiso. Un error elegido es un experimento. Y cada experimento que sobrevives sin consecuencia le rebaja el precio a todos los errores futuros — incluidos los de verdad.</p>"}
+],
+ma:[
+ {t:"El juego del estatus", cuerpo:"<p>Johnstone descubrió mirando actores lo que la calle confirma: toda interacción tiene un sube-y-baja de estatus, y quien sufre socialmente no es el que juega bajo — es el que quedó <em>fijo</em> en un solo registro.</p><p>Estatus alto: cuerpo quieto, frases completas, pausas sin disculpa, mirada sostenida. Estatus bajo: ceder el paso, preguntar, reírse primero, servir. Ninguno es mejor; el bajo bien jugado es un regalo que relaja la sala entera. La maestría es el interruptor: elegir cuál usar según el momento, en vez de que el miedo elija por ti. Arriba del escenario ya lo haces. Este trabajo es traer el interruptor a la calle.</p>"},
+ {t:"Transmitir: el grado que se regala", cuerpo:"<p>Enseñar no es el premio del que terminó: es la última herramienta del taller. Explicarle el oficio a otro te obliga a ordenarlo, y al ordenarlo lo terminas de aprender — el que enseña estudia dos veces.</p><p>Tienes tres mesas donde hacerlo: la mesa de juego donde ya narras, el escenario donde ya conduces, y la conversación a solas con alguien que pelea con su propio perro y no sabe que se puede ganar. No hace falta título ni permiso. Hace falta haber pasado por la cantera y acordarse del camino. Eso, a esta altura, ya lo tienes.</p>"}
+]};
+
+const LIBROS = {
+ap:[
+ {tt:"The Shyness and Social Anxiety Workbook", au:"Martin M. Antony & Richard P. Swinson",
+  pq:"El manual técnico debajo de todo este taller: cómo se arma una jerarquía de exposición y por qué el miedo cede al quedarte, no al huir.", uso:"Compañero de los trabajos I y VI."},
+ {tt:"How to Be Yourself", au:"Ellen Hendriksen",
+  pq:"Va directo a la voz que negocia: cómo suena, por qué miente con tanta seguridad, y cómo se le baja el volumen sin declararle la guerra.", uso:"Alimenta el trabajo III."},
+ {tt:"Cartas a Lucilio", au:"Séneca",
+  pq:"Estoicismo sin pose: cartas breves para no dejarte gobernar por la micro, el ruido ni el juicio ajeno. Dos mil años y sigue operativo.", uso:"Una carta por noche. No más."},
+ {tt:"Meditaciones", au:"Marco Aurelio",
+  pq:"El cuaderno privado de un hombre que se hablaba a sí mismo como tú a tu registro: sin público, sin pose. Dominio público — hay buenas ediciones gratuitas.", uso:"Libros II y IV primero."},
+ {tt:"Sentirse bien (Feeling Good)", au:"David D. Burns",
+  pq:"El catálogo de las trampas del pensamiento — catastrofizar, leer mentes, la vara doble — con nombre y apellido. Reconocerlas es medio trabajo.", uso:"Su capítulo de distorsiones es la teoría del trabajo III."}
+],
+co:[
+ {tt:"Sé amable contigo mismo (Self-Compassion)", au:"Kristin Neff",
+  pq:"La investigación detrás del trabajo VI: por qué la vara brutal no te hace mejor — te hace más lento, más rumiante y más cobarde a la hora de intentar.", uso:"El manual del trabajo VI."},
+ {tt:"Quiet: el poder de los introvertidos", au:"Susan Cain",
+  pq:"No todo lo tuyo es miedo: parte es temperamento, y el temperamento no se corrige — se administra. Distinguir uno de otro cambia el taller entero.", uso:"Léelo cuando dudes de si el trabajo es contra ti."},
+ {tt:"Hábitos atómicos", au:"James Clear",
+  pq:"La mecánica de la racha: por qué un trabajo chico diario le gana siempre a la hazaña ocasional, y cómo hacer que el sistema empuje solo.", uso:"Su ley de «hazlo fácil» es la escala de estos trabajos."},
+ {tt:"La trampa de la felicidad", au:"Russ Harris",
+  pq:"ACT en versión legible: defusión, valores y acción comprometida. Contiene la técnica exacta del trabajo II — mirar el pensamiento en vez de mirar desde él.", uso:"Pareja de la ficha de defusión."},
+ {tt:"Frágil: el poder de la vulnerabilidad (Daring Greatly)", au:"Brené Brown",
+  pq:"Ser visto como riesgo elegido y no como accidente que se sufre. Es el puente conceptual entre este grado y el de Maestro.", uso:"Prepara el trabajo III de Maestro."}
+],
+ma:[
+ {tt:"Impro", au:"Keith Johnstone",
+  pq:"El puente exacto entre Don Carleone y el Carlos de las fiestas: estatus, espontaneidad, y por qué el escenario ya te enseñó lo que la calle te pide.", uso:"Manual de los trabajos I y II."},
+ {tt:"Ensayos — «Del arte de conversar»", au:"Michel de Montaigne",
+  pq:"El trabajo V escrito hace cuatrocientos cincuenta años: discrepar como forma de amistad, no de guerra. Empieza por ese ensayo, no por el tomo completo.", uso:"Lectura previa al trabajo V."},
+ {tt:"El hombre en busca de sentido", au:"Viktor Frankl",
+  pq:"Para tu Reverencia: el sentido no se encuentra tirado — se responde con la vida. Lo que sostiene cuando el miedo ya es lo de menos.", uso:"Para el tramo final del grado."},
+ {tt:"Enquiridión", au:"Epicteto",
+  pq:"Cincuenta y tres entradas sobre la única división que importa: lo que depende de ti y lo que no. Dominio público, cabe en un bolsillo.", uso:"Una entrada por trabajo cerrado."},
+ {tt:"El mito del carisma", au:"Olivia Fox Cabane",
+  pq:"Presencia, poder y calidez como conductas entrenables, no como don de nacimiento. Técnica pura para el grado que se regala.", uso:"Afinación fina de los trabajos I y VII."}
+]};
+
+const CARTA = "Cada noche que te subes a un escenario haces la exposición más brutal que existe. Arriba tienes un papel, un libreto, un para qué. En la calle estás desnudo, y ahí el perro ladra. El trabajo de este taller no es callar al perro: es prestarle a tu otro yo el libreto que ya sabes usar. No quiero que dejes de sentir miedo. Quiero que entres con el miedo puesto y te quedes igual. La piedra no desaparece. Cambia de forma.";
+
+/* ════════ ESTADO ════════ */
+const KEY = "el-taller-v2";
+const nuevoTrabajo = () => ({pred:null, real:null, nota:"", abierto:null, cerrado:null});
+const nuevoEstado = () => ({
+  v:2, startedAt:Date.now(), migradoDe:null,
+  avisos:{co:false, ma:false, fin:false},
+  works:{ap:Array.from({length:7},nuevoTrabajo), co:Array.from({length:7},nuevoTrabajo), ma:Array.from({length:7},nuevoTrabajo)}
+});
+let estado = null;
+let gradoVista = "ap";
+let biblioVista = "ap";
+
+function guardar(){ try{ localStorage.setItem(KEY, JSON.stringify(estado)); }catch(e){} }
+
+function num(v){ const n = Number(v); return Number.isFinite(n) ? Math.max(0, Math.min(10, n)) : null; }
+
+/* migración desde la primera versión (misma origin: cviertelr.github.io) */
+function migrar(){
+  for (let i=0;i<localStorage.length;i++){
+    const k = localStorage.key(i);
+    if (k === KEY) continue;
+    let d; try{ d = JSON.parse(localStorage.getItem(k)); }catch(e){ continue; }
+    if (!d || typeof d !== "object" || !d.days || typeof d.days !== "object") continue;
+    const e = nuevoEstado();
+    e.startedAt = d.startedAt || Date.now();
+    e.migradoDe = k;
+    const claves = Object.keys(d.days).sort((a,b)=>(parseInt(a,10)||0)-(parseInt(b,10)||0));
+    claves.forEach((ck, idx)=>{
+      if (idx > 6) return;
+      const v = d.days[ck]; if (!v || typeof v !== "object") return;
+      const w = e.works.ap[idx];
+      for (const p in v){
+        if (/pred/i.test(p) && num(v[p])!==null) w.pred = num(v[p]);
+        else if (/real/i.test(p) && num(v[p])!==null) w.real = num(v[p]);
+        else if (/nota|note/i.test(p) && typeof v[p]==="string") w.nota = v[p];
+      }
+      const hecho = Object.keys(v).some(p=>/done|hecho|cerr|complet/i.test(p) && v[p]) || w.real !== null;
+      if (hecho){ w.cerrado = e.startedAt; if (w.abierto===null) w.abierto = e.startedAt; }
+    });
+    if (e.works.ap.some(w=>w.cerrado)) return e;
+  }
+  return null;
+}
+
+function cargar(){
+  let bruto = null;
+  try{ bruto = JSON.parse(localStorage.getItem(KEY)); }catch(e){}
+  if (bruto && bruto.v === 2){ estado = bruto; return "existente"; }
+  const mig = migrar();
+  if (mig){ estado = mig; guardar(); return "migrado"; }
+  estado = nuevoEstado(); guardar(); return "nuevo";
+}
+
+/* ════════ CÁLCULOS ════════ */
+const hechosDe = g => estado.works[g].filter(w=>w.cerrado).length;
+const totalHechos = () => ORDEN.reduce((s,g)=>s+hechosDe(g),0);
+function desbloqueado(g){
+  if (g==="ap") return true;
+  if (g==="co") return hechosDe("ap") >= UMBRAL;
+  return hechosDe("co") >= UMBRAL;
+}
+function gradoActual(){
+  if (desbloqueado("ma") && hechosDe("ma")>0) return "ma";
+  if (desbloqueado("ma")) return "ma";
+  if (desbloqueado("co")) return "co";
+  return "ap";
+}
+function cerrados(){
+  const out = [];
+  ORDEN.forEach(g=>estado.works[g].forEach((w,i)=>{ if(w.cerrado) out.push({g,i,pred:w.pred,real:w.real,fecha:w.cerrado}); }));
+  out.sort((a,b)=>a.fecha-b.fecha);
+  return out;
+}
+function promedios(){
+  const cs = cerrados().filter(c=>c.pred!==null && c.real!==null);
+  if (!cs.length) return null;
+  const p = cs.reduce((s,c)=>s+c.pred,0)/cs.length;
+  const r = cs.reduce((s,c)=>s+c.real,0)/cs.length;
+  return {p,r,n:cs.length};
+}
+function racha(){
+  const dias = new Set(cerrados().map(c=>new Date(c.fecha).toDateString()));
+  if (!dias.size) return 0;
+  let n=0; const d = new Date();
+  if (!dias.has(d.toDateString())) d.setDate(d.getDate()-1);
+  while (dias.has(d.toDateString())){ n++; d.setDate(d.getDate()-1); }
+  return n;
+}
+
+/* ════════ TOASTS ════════ */
+function toast(msg, ms){
+  const t = document.createElement("div");
+  t.className = "toast";
+  t.innerHTML = msg + '<span class="quien">— El Maestro Cantero</span>';
+  document.getElementById("toasts").appendChild(t);
+  setTimeout(()=>{ t.style.opacity="0"; t.style.transition="opacity .4s"; setTimeout(()=>t.remove(),450); }, ms||4200);
+}
+
+/* ════════ RENDER: REGISTRO ════════ */
+function romano(n){ return ["I","II","III","IV","V","VI","VII"][n]; }
+
+function pintarRegistro(){
+  const total = totalHechos();
+  const g = gradoActual();
+  document.getElementById("chipGrado").textContent = GRADOS[g].nombre;
+  document.getElementById("tituloGrado").textContent = "Grado de " + GRADOS[g].nombre;
+  document.getElementById("lemaGrado").textContent = GRADOS[g].lema;
+
+  const p = total/21;
+  document.getElementById("svgBruta").style.opacity = String(Math.max(0.08, 1 - p*0.95));
+  document.getElementById("svgCubo").style.opacity = String(Math.min(1, p*1.05));
+  const nombrePiedra = total===0 ? "Piedra bruta" : total>=21 ? "Piedra cúbica" : total>=14 ? "Piedra asentada" : total>=7 ? "Piedra desbastada" : "Piedra golpeada";
+  document.getElementById("pctPiedra").textContent = nombrePiedra + " · " + total + " de 21 trabajos";
+
+  document.getElementById("mHechos").innerHTML = total + "<small>/21</small>";
+  document.getElementById("mRacha").textContent = racha();
+  const prom = promedios();
+  document.getElementById("mPred").textContent = prom ? prom.p.toFixed(1) : "—";
+  document.getElementById("mReal").textContent = prom ? prom.r.toFixed(1) : "—";
+  const fr = document.getElementById("brechaFrase");
+  if (!prom){ fr.textContent = "Aún no hay piedra labrada. La primera medición ocurre cuando cierras tu primer trabajo."; }
+  else {
+    const d = prom.p - prom.r;
+    if (d > 0.4) fr.textContent = "En promedio, la realidad fue " + d.toFixed(1) + " puntos más blanda que tu predicción. Ese es el impuesto que el perro te venía cobrando por adelantado.";
+    else if (d < -0.4) fr.textContent = "La realidad viene doliendo algo más que tu predicción — y aun así cerraste " + prom.n + " trabajos. Eso vale doble, y también dice que puedes bajar un peldaño sin vergüenza.";
+    else fr.textContent = "Predicción y realidad casi calzan. Ya conoces tu cantera: hora de subir un peldaño.";
+  }
+  pintarChart();
+  pintarGrados();
+  document.getElementById("cartaCantero").innerHTML = CARTA + '<span class="firma" style="display:block">— El Maestro Cantero</span>';
+}
+
+function pintarChart(){
+  const cs = cerrados().filter(c=>c.pred!==null && c.real!==null);
+  const svg = document.getElementById("chartBrecha");
+  const vacio = document.getElementById("chartVacio");
+  const ley = document.getElementById("chartLeyenda");
+  if (!cs.length){ svg.style.display="none"; ley.style.display="none"; vacio.style.display="block"; return; }
+  vacio.style.display="none"; svg.style.display="block"; ley.style.display="flex";
+  const paso=30, izq=8, alto=132, base=110;
+  const ancho = izq*2 + cs.length*paso;
+  svg.setAttribute("viewBox","0 0 "+ancho+" "+alto);
+  svg.setAttribute("width", ancho); svg.setAttribute("height", alto);
+  let s = '<line x1="0" y1="'+base+'" x2="'+ancho+'" y2="'+base+'" stroke="#2b2244" stroke-width="1"/>';
+  const inicial = {ap:"A", co:"C", ma:"M"};
+  cs.forEach((c,ix)=>{
+    const x = izq + ix*paso;
+    const hp = c.pred*9.6, hr = c.real*9.6;
+    const colR = c.real < c.pred ? "#5f9971" : "#9a6fd0";
+    s += '<rect x="'+(x+2)+'" y="'+(base-hp)+'" width="9" height="'+Math.max(hp,1)+'" fill="none" stroke="#c8a668" stroke-width="1.2" rx="1.5"/>';
+    s += '<rect x="'+(x+13)+'" y="'+(base-hr)+'" width="9" height="'+Math.max(hr,1)+'" fill="'+colR+'" rx="1.5" opacity=".9"/>';
+    s += '<text x="'+(x+12)+'" y="'+(base+14)+'" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="8" fill="#93899f">'+inicial[c.g]+romano(c.i)+'</text>';
+  });
+  svg.innerHTML = s;
+}
+
+function pintarGrados(){
+  const cont = document.getElementById("gradosLista");
+  cont.innerHTML = "";
+  ORDEN.forEach(g=>{
+    const h = hechosDe(g), abierto = desbloqueado(g), completo = h>=7;
+    const fila = document.createElement("div");
+    fila.className = "grado-fila" + (completo ? " completo" : abierto ? " activo" : "");
+    const sello = completo ? "piedra cúbica" : abierto ? "en obra" : (g==="co" ? "se abre con "+UMBRAL+" de Aprendiz" : "se abre con "+UMBRAL+" de Compañero");
+    fila.innerHTML =
+      '<div class="arriba"><span class="nom">'+GRADOS[g].nombre+'<i>· '+GRADOS[g].lema+'</i></span><span class="sello">'+sello+'</span></div>' +
+      '<div class="barra"><i style="width:'+(h/7*100)+'%"></i></div>';
+    cont.appendChild(fila);
+  });
+}
+
+/* ════════ RENDER: TRABAJOS ════════ */
+function pintarPestGrados(){
+  const cont = document.getElementById("pestGrados");
+  cont.innerHTML = "";
+  ORDEN.forEach(g=>{
+    const b = document.createElement("button");
+    b.className = "pest" + (g===gradoVista ? " on" : "");
+    const abierto = desbloqueado(g);
+    b.innerHTML = GRADOS[g].nombre + (abierto ? "" : ' <span class="candado">🜍</span>');
+    b.addEventListener("click", ()=>{ gradoVista = g; pintarTrabajos(); });
+    cont.appendChild(b);
+  });
+}
+
+function pintarTrabajos(){
+  pintarPestGrados();
+  document.getElementById("tituloTrabajos").textContent = GRADOS[gradoVista].lema;
+  document.getElementById("ledeTrabajos").textContent = GRADOS[gradoVista].intro;
+  const zona = document.getElementById("zonaTrabajos");
+  zona.innerHTML = "";
+  if (!desbloqueado(gradoVista)){
+    const req = gradoVista==="co" ? "Cierra "+UMBRAL+" trabajos de Aprendiz" : "Cierra "+UMBRAL+" trabajos de Compañero";
+    zona.innerHTML = '<div class="grado-cerrado"><span class="cand">🜍</span>Este grado está sellado. La piedra se labra en orden.<div class="req">'+req+' para abrirlo</div></div>';
+    return;
+  }
+  const lista = document.createElement("div");
+  lista.className = "trabajos";
+  TRABAJOS[gradoVista].forEach((tr,i)=>lista.appendChild(tarjetaTrabajo(gradoVista,i,tr)));
+  zona.appendChild(lista);
+}
+
+function tarjetaTrabajo(g,i,tr){
+  const w = estado.works[g][i];
+  const card = document.createElement("article");
+  const est = w.cerrado ? "cerrado-t" : (w.abierto ? "abierto-t" : "");
+  card.className = "trabajo " + est;
+  const pip = w.cerrado ? "cerrado" : w.abierto ? "en obra" : "pendiente";
+  card.innerHTML =
+    '<button class="cabeza" aria-expanded="false"><span class="num-romano">'+romano(i)+'</span>' +
+    '<span class="tit"><span class="t">'+tr.t+'</span><span class="en">'+tr.en+'</span></span>' +
+    '<span class="estado-pip">'+pip+'</span></button>' +
+    '<div class="cuerpo-t"></div>';
+  card.querySelector(".cabeza").addEventListener("click", ()=>{
+    const ya = card.classList.contains("exp");
+    card.classList.toggle("exp");
+    card.querySelector(".cabeza").setAttribute("aria-expanded", String(!ya));
+    if (!ya) pintarCuerpoTrabajo(card, g, i, tr);
+  });
+  return card;
+}
+
+function pintarCuerpoTrabajo(card,g,i,tr){
+  const w = estado.works[g][i];
+  const cuerpo = card.querySelector(".cuerpo-t");
+  let html = '<p class="consigna">'+tr.c+'</p>';
+
+  if (!w.abierto){
+    html += '<div class="paso"><div class="paso-et">Antes de salir · ¿cuánto miedo predices? (0–10)</div>' +
+      '<div class="rango-fila"><input type="range" min="0" max="10" step="1" value="5" class="rgPred" aria-label="Miedo predicho"><span class="rango-num nPred">5</span></div>' +
+      '<button class="btn btAbrir">Abrir el trabajo</button></div>';
+  } else if (!w.cerrado){
+    html += '<div class="pred-fija">Predijiste: '+w.pred+' / 10 — el trabajo está abierto. Hazlo, y vuelve a medir.</div>' +
+      '<div class="paso"><div class="paso-et">De vuelta · ¿cuánto fue de verdad? (0–10)</div>' +
+      '<div class="rango-fila"><input type="range" min="0" max="10" step="1" value="'+Math.min(w.pred??5,10)+'" class="rgReal" aria-label="Miedo real"><span class="rango-num nReal">'+Math.min(w.pred??5,10)+'</span></div></div>' +
+      '<div class="paso"><div class="paso-et">Bitácora (opcional)</div>' +
+      '<textarea class="nota" placeholder="Qué pasó, qué dijo la voz, qué harías distinto…"></textarea></div>' +
+      '<button class="btn verde btCerrar">Cerrar el trabajo</button>';
+  } else {
+    const d = (w.pred!==null && w.real!==null) ? w.pred - w.real : null;
+    let ver = "Trabajo cerrado.";
+    if (d!==null){
+      if (d>0) ver = "Predijiste "+w.pred+" y fue "+w.real+". La piedra era más blanda que tu miedo — anótalo en la cuenta contra el perro.";
+      else if (d<0) ver = "Predijiste "+w.pred+" y fue "+w.real+". Dolió más de lo esperado, y aun así lo cerraste. Eso vale doble.";
+      else ver = "Predijiste "+w.pred+" y fue "+w.real+". Calzó justo: ya conoces esta parte de tu cantera.";
+    }
+    html += '<div class="veredicto">'+ver+
+      (w.nota ? '<span class="datos">Bitácora: '+w.nota.replace(/</g,"&lt;")+'</span>' : "")+
+      '<span class="datos">'+ (w.cerrado ? new Date(w.cerrado).toLocaleDateString("es-CL",{day:"numeric",month:"long"}) : "") +'</span></div>'+
+      '<button class="btn fantasma btReabrir">Reabrir este trabajo</button>';
+  }
+  cuerpo.innerHTML = html;
+
+  const rgP = cuerpo.querySelector(".rgPred");
+  if (rgP) rgP.addEventListener("input", ()=>cuerpo.querySelector(".nPred").textContent = rgP.value);
+  const rgR = cuerpo.querySelector(".rgReal");
+  if (rgR) rgR.addEventListener("input", ()=>cuerpo.querySelector(".nReal").textContent = rgR.value);
+
+  const btA = cuerpo.querySelector(".btAbrir");
+  if (btA) btA.addEventListener("click", ()=>{
+    w.pred = num(rgP.value); w.abierto = Date.now(); guardar();
+    card.className = "trabajo abierto-t exp";
+    card.querySelector(".estado-pip").textContent = "en obra";
+    pintarCuerpoTrabajo(card,g,i,tr);
+    toast("El trabajo está abierto. Ahora sal, hazlo, y vuelve a medir. La predicción ya quedó escrita: no se negocia.");
+  });
+
+  const btC = cuerpo.querySelector(".btCerrar");
+  if (btC) btC.addEventListener("click", ()=>{
+    w.real = num(rgR.value);
+    w.nota = (cuerpo.querySelector(".nota").value || "").slice(0,600);
+    w.cerrado = Date.now(); guardar();
+    card.className = "trabajo cerrado-t exp";
+    card.querySelector(".estado-pip").textContent = "cerrado";
+    pintarCuerpoTrabajo(card,g,i,tr);
+    revisarDesbloqueos();
+    pintarRegistro();
+  });
+
+  const btR = cuerpo.querySelector(".btReabrir");
+  if (btR) btR.addEventListener("click", ()=>{
+    if (!confirm("¿Reabrir este trabajo? Se borra su medición.")) return;
+    Object.assign(w, nuevoTrabajo()); guardar();
+    card.className = "trabajo exp";
+    card.querySelector(".estado-pip").textContent = "pendiente";
+    pintarCuerpoTrabajo(card,g,i,tr);
+    pintarRegistro();
+  });
+}
+
+function revisarDesbloqueos(){
+  if (!estado.avisos.co && hechosDe("ap")>=UMBRAL){
+    estado.avisos.co = true; guardar();
+    toast("El grado de Compañero está abierto. La herramienta cambia: del cincel a la escuadra.", 5200);
+    pintarPestGrados();
+  }
+  if (!estado.avisos.ma && hechosDe("co")>=UMBRAL){
+    estado.avisos.ma = true; guardar();
+    toast("El grado de Maestro está abierto. Lo que queda no se conquista: se suelta.", 5200);
+    pintarPestGrados();
+  }
+  if (!estado.avisos.fin && totalHechos()>=21){
+    estado.avisos.fin = true; guardar();
+    toast("Veintiún trabajos. La piedra quedó cúbica. Ahora el oficio es tuyo — ve y regálalo.", 6500);
+  }
+}
+
+/* ════════ RENDER: BIBLIOTECA ════════ */
+function pintarPestBiblio(){
+  const cont = document.getElementById("pestBiblio");
+  cont.innerHTML = "";
+  ORDEN.forEach(g=>{
+    const b = document.createElement("button");
+    b.className = "pest" + (g===biblioVista ? " on" : "");
+    b.textContent = GRADOS[g].nombre;
+    b.addEventListener("click", ()=>{ biblioVista=g; pintarBiblio(); });
+    cont.appendChild(b);
+  });
+}
+
+function plegable(clase, marca, tt, au, cuerpoHtml){
+  const el = document.createElement("article");
+  el.className = clase;
+  el.innerHTML =
+    '<button class="cabeza-b" aria-expanded="false"><span class="marca-b">'+marca+'</span>' +
+    '<span><span class="tt">'+tt+'</span>'+(au?'<span class="au" style="display:block">'+au+'</span>':'')+'</span>' +
+    '<span class="flecha">›</span></button><div class="cuerpo-b">'+cuerpoHtml+'</div>';
+  el.querySelector(".cabeza-b").addEventListener("click", ()=>{
+    const ya = el.classList.contains("exp");
+    el.classList.toggle("exp");
+    el.querySelector(".cabeza-b").setAttribute("aria-expanded", String(!ya));
+  });
+  return el;
+}
+
+function pintarBiblio(){
+  pintarPestBiblio();
+  const zona = document.getElementById("zonaBiblio");
+  zona.innerHTML = "";
+  const sf = document.createElement("p"); sf.className="sub-biblio"; sf.textContent="Fichas del Cantero · se leen aquí mismo";
+  zona.appendChild(sf);
+  FICHAS[biblioVista].forEach((f,ix)=>zona.appendChild(plegable("ficha","✦",f.t,null,f.cuerpo)));
+  const sl = document.createElement("p"); sl.className="sub-biblio"; sl.textContent="Los libros del grado";
+  zona.appendChild(sl);
+  LIBROS[biblioVista].forEach((l,ix)=>zona.appendChild(
+    plegable("libro", ["i","ii","iii","iv","v"][ix], l.tt, l.au,
+      '<p class="pq">'+l.pq+'</p><p class="uso">◆ '+l.uso+'</p>')
+  ));
+}
+
+/* ════════ RENDER: AJUAR ════════ */
+function pintarAjuar(){
+  const cont = document.getElementById("siembraFilas");
+  cont.innerHTML = "";
+  TRABAJOS.ap.forEach((tr,i)=>{
+    const w = estado.works.ap[i];
+    const fila = document.createElement("div");
+    fila.className = "siembra-fila";
+    fila.innerHTML =
+      '<label><input type="checkbox" '+(w.cerrado?"checked":"")+' data-i="'+i+'"> '+romano(i)+' · '+tr.t+'</label>' +
+      '<input type="number" min="0" max="10" placeholder="—" value="'+(w.pred??"")+'" data-p="'+i+'" aria-label="Miedo predicho">' +
+      '<input type="number" min="0" max="10" placeholder="—" value="'+(w.real??"")+'" data-r="'+i+'" aria-label="Miedo real">';
+    cont.appendChild(fila);
+  });
+  document.getElementById("exportaTxt").value = JSON.stringify(estado);
+}
+
+function atarAjuar(){
+  document.getElementById("btnSembrar").addEventListener("click", ()=>{
+    const cont = document.getElementById("siembraFilas");
+    let n=0;
+    TRABAJOS.ap.forEach((tr,i)=>{
+      const chk = cont.querySelector('[data-i="'+i+'"]').checked;
+      const p = num(cont.querySelector('[data-p="'+i+'"]').value);
+      const r = num(cont.querySelector('[data-r="'+i+'"]').value);
+      const w = estado.works.ap[i];
+      if (chk){
+        w.pred = p; w.real = r;
+        if (!w.cerrado){ const dia = Date.now() - (7-i)*86400000; w.abierto = dia; w.cerrado = dia; }
+        n++;
+      } else { Object.assign(w, nuevoTrabajo()); }
+    });
+    guardar(); revisarDesbloqueos(); pintarRegistro(); pintarTrabajos(); pintarAjuar();
+    toast("Registro sembrado: "+n+" trabajos de Aprendiz en la piedra." + (n>=UMBRAL ? " El grado de Compañero está abierto." : ""));
+  });
+  document.getElementById("btnCopiar").addEventListener("click", async ()=>{
+    const txt = document.getElementById("exportaTxt");
+    txt.select();
+    try{ await navigator.clipboard.writeText(txt.value); toast("Copia del registro en el portapapeles. Guárdala bien."); }
+    catch(e){ document.execCommand("copy"); toast("Copia lista — pégala donde la quieras guardar."); }
+  });
+  document.getElementById("btnRestaurar").addEventListener("click", ()=>{
+    let d; try{ d = JSON.parse(document.getElementById("importaTxt").value); }catch(e){ toast("Esa copia no se pudo leer. Revisa que esté pegada completa."); return; }
+    if (!d || d.v!==2 || !d.works){ toast("Esa copia no tiene la forma del registro. Revisa que sea la del Taller."); return; }
+    estado = d; guardar(); pintarRegistro(); pintarTrabajos(); pintarAjuar();
+    toast("Registro restaurado. La piedra volvió a donde estaba.");
+  });
+  document.getElementById("btnReiniciar").addEventListener("click", ()=>{
+    if (!confirm("¿Devolver la piedra a la cantera? Se borra todo el registro y no se puede deshacer.")) return;
+    estado = nuevoEstado(); guardar();
+    pintarRegistro(); pintarTrabajos(); pintarAjuar();
+    toast("Registro limpio. La cantera espera.");
+  });
+}
+
+/* ════════ NAVEGACIÓN ════════ */
+document.querySelectorAll("nav.abajo button").forEach(b=>{
+  b.addEventListener("click", ()=>{
+    document.querySelectorAll("nav.abajo button").forEach(x=>x.classList.remove("on"));
+    b.classList.add("on");
+    document.querySelectorAll(".vista").forEach(v=>v.classList.remove("on"));
+    document.getElementById("v-"+b.dataset.v).classList.add("on");
+    if (b.dataset.v==="registro") pintarRegistro();
+    if (b.dataset.v==="trabajos") pintarTrabajos();
+    if (b.dataset.v==="biblioteca") pintarBiblio();
+    if (b.dataset.v==="ajuar") pintarAjuar();
+    window.scrollTo({top:0});
+  });
+});
+
+/* ════════ ARRANQUE ════════ */
+const origen = cargar();
+gradoVista = gradoActual();
+biblioVista = gradoVista;
+pintarRegistro(); pintarTrabajos(); pintarBiblio(); pintarAjuar(); atarAjuar();
+
+if (origen === "nuevo"){
+  const velo = document.getElementById("velo");
+  velo.classList.add("on");
+  document.getElementById("btnEntrar").addEventListener("click", ()=>velo.classList.remove("on"));
+} else if (origen === "migrado"){
+  setTimeout(()=>toast("Encontré tu registro de Aprendiz y lo traje a la nueva obra. La piedra sigue donde la dejaste."), 700);
+  revisarDesbloqueos();
+}
+})();
+</script>
+</body>
+</html>
