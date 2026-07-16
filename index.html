@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0d0b12">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="El Taller">
+<meta name="mobile-web-app-capable" content="yes">
+<title>El Taller · Grados del Cantero</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Spectral:ital,wght@0,300;0,400;0,500;1,300&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --obsidiana:#0d0b12; --carbon:#151020; --piedra:#201a2e; --borde:#2e2740;
+  --hueso:#e9e3d3; --ceniza:#8f8699; --purpura:#9d7ce0; --purpura-h:#7c5cbf;
+  --verde:#6aa886; --oro:#c9a55c; --rojo:#b8746a;
+  --disp:'Cormorant Garamond',serif; --body:'Spectral',serif; --mono:'IBM Plex Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--obsidiana);color:var(--hueso);font-family:var(--body);font-weight:300;
+  font-size:16px;line-height:1.6;padding-bottom:86px;
+  background-image:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(124,92,191,.10),transparent 60%)}
+.wrap{max-width:640px;margin:0 auto;padding:0 20px}
+header{padding:26px 0 8px;text-align:center}
+header .marca{font-family:var(--mono);font-size:10px;letter-spacing:.42em;color:var(--ceniza);text-transform:uppercase}
+header h1{font-family:var(--disp);font-weight:500;font-size:34px;letter-spacing:.06em;margin-top:2px}
+header .grado-actual{font-family:var(--mono);font-size:11px;letter-spacing:.22em;color:var(--oro);text-transform:uppercase;margin-top:2px}
+.eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.34em;text-transform:uppercase;color:var(--purpura);margin-bottom:6px}
+h2{font-family:var(--disp);font-weight:500;font-size:26px;letter-spacing:.02em;margin-bottom:10px}
+section.pantalla{display:none;padding-top:18px}
+section.pantalla.on{display:block;animation:sube .35s ease}
+@keyframes sube{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ---- piedra ---- */
+.piedra-caja{display:flex;flex-direction:column;align-items:center;margin:6px 0 18px}
+.piedra-caja svg{width:130px;height:130px;filter:drop-shadow(0 6px 22px rgba(124,92,191,.28))}
+.piedra-caja .estado-piedra{font-family:var(--mono);font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--ceniza);margin-top:8px}
+
+/* ---- tablero ---- */
+.tablero{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.metrica{background:var(--carbon);border:1px solid var(--borde);border-radius:10px;padding:14px 14px 11px;text-align:center}
+.metrica .n{font-family:var(--disp);font-size:32px;font-weight:500;line-height:1;color:var(--hueso)}
+.metrica .n small{font-size:16px;color:var(--ceniza)}
+.metrica .et{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ceniza);margin-top:6px}
+.metrica.pred .n{color:var(--purpura)} .metrica.real .n{color:var(--verde)}
+.brecha{background:var(--carbon);border:1px solid var(--borde);border-left:3px solid var(--oro);border-radius:10px;padding:14px 16px;margin-top:12px;font-style:italic;font-size:15px;color:var(--hueso)}
+.grados-mapa{margin-top:22px;display:flex;flex-direction:column;gap:10px}
+.gr{background:var(--carbon);border:1px solid var(--borde);border-radius:10px;padding:13px 15px;display:flex;align-items:center;gap:13px;cursor:pointer;transition:border-color .2s}
+.gr.activo{border-color:var(--purpura)}
+.gr.cerrado{opacity:.55;cursor:default}
+.gr .sello{width:38px;height:38px;flex:0 0 38px;border-radius:50%;border:1px solid var(--borde);display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-size:19px;color:var(--ceniza)}
+.gr.activo .sello{border-color:var(--oro);color:var(--oro)}
+.gr.hecho .sello{border-color:var(--verde);color:var(--verde)}
+.gr .info{flex:1;min-width:0}
+.gr .nom{font-family:var(--disp);font-size:19px;font-weight:500}
+.gr .sub{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ceniza);margin-top:1px}
+.gr .cifra{font-family:var(--mono);font-size:12px;color:var(--ceniza);white-space:nowrap}
+.barra{height:3px;background:var(--piedra);border-radius:2px;margin-top:8px;overflow:hidden}
+.barra i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--purpura-h),var(--purpura));transition:width .6s ease}
+.gr.hecho .barra i{background:var(--verde)}
+
+/* ---- bitácora ---- */
+.bitacora{margin-top:26px}
+.entrada{background:var(--carbon);border:1px solid var(--borde);border-radius:10px;padding:12px 14px;margin-bottom:9px}
+.entrada .meta{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--ceniza);text-transform:uppercase}
+.entrada .tt{font-family:var(--disp);font-size:17px;font-weight:500;margin:3px 0 1px}
+.entrada .cifras{font-family:var(--mono);font-size:11px;margin-top:2px}
+.entrada .cifras b{font-weight:500}
+.entrada .cifras .p{color:var(--purpura)} .entrada .cifras .r{color:var(--verde)}
+.entrada .nota{font-size:14px;color:var(--ceniza);font-style:italic;margin-top:5px}
+.vacio{border:1px dashed var(--borde);border-radius:10px;padding:20px;text-align:center;color:var(--ceniza);font-style:italic;font-size:14px}
+
+/* ---- pestañas de grado ---- */
+.pestanas{display:flex;gap:8px;margin:4px 0 16px}
+.pest{flex:1;background:var(--carbon);border:1px solid var(--borde);border-radius:8px;color:var(--ceniza);
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;padding:10px 4px;cursor:pointer}
+.pest.on{border-color:var(--purpura);color:var(--hueso);background:var(--piedra)}
+.pest.lock{opacity:.5}
+.lema-grado{font-style:italic;color:var(--ceniza);font-size:14.5px;margin:-6px 0 16px}
+
+/* ---- trabajos ---- */
+.trabajo{background:var(--carbon);border:1px solid var(--borde);border-radius:12px;margin-bottom:11px;overflow:hidden;transition:border-color .25s}
+.trabajo.abierto{border-color:var(--purpura)}
+.trabajo.hecho{border-color:rgba(106,168,134,.5)}
+.trabajo .cab{display:flex;align-items:center;gap:12px;padding:14px 15px;cursor:pointer}
+.trabajo .num{width:30px;height:30px;flex:0 0 30px;border-radius:50%;border:1px solid var(--borde);
+  display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-size:15px;color:var(--ceniza)}
+.trabajo.hecho .num{border-color:var(--verde);color:var(--verde)}
+.trabajo.curso .num{border-color:var(--oro);color:var(--oro)}
+.trabajo .cab .t{flex:1;min-width:0}
+.trabajo .cab .tt{font-family:var(--disp);font-size:19px;font-weight:500;line-height:1.25}
+.trabajo .cab .lm{font-size:13px;color:var(--ceniza);font-style:italic}
+.chip{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;padding:4px 8px;border-radius:20px;border:1px solid var(--borde);color:var(--ceniza);white-space:nowrap}
+.chip.curso{border-color:var(--oro);color:var(--oro)}
+.chip.hecho{border-color:var(--verde);color:var(--verde)}
+.trabajo .cuerpo{display:none;padding:0 15px 16px}
+.trabajo.abierto .cuerpo{display:block;animation:sube .3s ease}
+.trabajo .desc{font-size:15px;margin-bottom:10px}
+.trabajo .porque{border-left:2px solid var(--purpura);padding:2px 0 2px 12px;font-size:14px;color:var(--ceniza);font-style:italic;margin-bottom:14px}
+.campo{margin-bottom:14px}
+.campo label{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ceniza);margin-bottom:8px}
+.campo label output{color:var(--hueso);font-size:13px}
+input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:4px;border-radius:2px;background:var(--piedra);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--purpura);border:2px solid var(--obsidiana);cursor:pointer}
+input[type=range].real::-webkit-slider-thumb{background:var(--verde)}
+textarea{width:100%;background:var(--piedra);border:1px solid var(--borde);border-radius:8px;color:var(--hueso);
+  font-family:var(--body);font-size:14px;padding:10px 12px;min-height:64px;resize:vertical}
+textarea:focus{outline:none;border-color:var(--purpura)}
+.btn{display:inline-block;width:100%;text-align:center;background:var(--purpura-h);border:none;border-radius:8px;color:#fff;
+  font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;padding:13px 10px;cursor:pointer;transition:background .2s}
+.btn:hover{background:var(--purpura)}
+.btn.verde{background:#3f7a5c} .btn.verde:hover{background:var(--verde)}
+.btn.fant{background:transparent;border:1px solid var(--borde);color:var(--ceniza)}
+.btn.fant:hover{border-color:var(--ceniza);color:var(--hueso)}
+.btn+.btn{margin-top:8px}
+.resultado{border:1px solid var(--borde);border-left:3px solid var(--verde);border-radius:8px;padding:12px 14px;font-size:14px;font-style:italic;margin-bottom:12px;background:var(--piedra)}
+.mini{font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:var(--ceniza);text-transform:uppercase}
+
+/* ---- biblioteca ---- */
+.libro{background:var(--carbon);border:1px solid var(--borde);border-radius:12px;margin-bottom:11px;overflow:hidden}
+.libro .cab{display:flex;gap:12px;padding:14px 15px;cursor:pointer;align-items:flex-start}
+.libro .lomo{width:8px;align-self:stretch;border-radius:3px;background:var(--purpura-h);flex:0 0 8px;min-height:44px}
+.libro.dp .lomo{background:var(--oro)}
+.libro.ficha-t .lomo{background:var(--verde)}
+.libro .t{flex:1;min-width:0}
+.libro .tt{font-family:var(--disp);font-size:18px;font-weight:500;line-height:1.25}
+.libro .au{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ceniza);margin-top:2px}
+.libro .tag{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--oro);margin-top:3px}
+.libro .cuerpo{display:none;padding:0 15px 15px}
+.libro.abierto .cuerpo{display:block;animation:sube .3s ease}
+.libro .pq{font-size:14.5px;margin-bottom:6px}
+.libro .tuyo{border-left:2px solid var(--purpura);padding-left:12px;font-size:14px;color:var(--ceniza);font-style:italic;margin:8px 0 12px}
+.est-lectura{display:flex;gap:7px}
+.est-lectura button{flex:1;background:var(--piedra);border:1px solid var(--borde);border-radius:7px;color:var(--ceniza);
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;padding:9px 4px;cursor:pointer}
+.est-lectura button.on{border-color:var(--verde);color:var(--verde)}
+.ficha-texto{border:1px solid var(--borde);border-radius:8px;background:var(--piedra);padding:14px 15px;font-size:14.5px;margin-top:10px}
+.ficha-texto p{margin-bottom:9px} .ficha-texto p:last-child{margin-bottom:0}
+.ficha-texto strong{font-weight:500;color:var(--purpura)}
+
+/* ---- legajo ---- */
+.caja{background:var(--carbon);border:1px solid var(--borde);border-radius:12px;padding:16px;margin-bottom:12px}
+.caja h3{font-family:var(--disp);font-size:20px;font-weight:500;margin-bottom:6px}
+.caja p{font-size:14px;color:var(--ceniza);margin-bottom:12px}
+.aviso{font-size:13px;color:var(--ceniza);font-style:italic;border-top:1px solid var(--borde);padding-top:14px;margin-top:6px}
+
+/* ---- navegación ---- */
+nav{position:fixed;bottom:0;left:0;right:0;background:rgba(13,11,18,.94);backdrop-filter:blur(10px);
+  border-top:1px solid var(--borde);display:flex;z-index:40;padding-bottom:env(safe-area-inset-bottom)}
+nav button{flex:1;background:none;border:none;color:var(--ceniza);padding:11px 2px 9px;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;gap:3px}
+nav button svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.5}
+nav button span{font-family:var(--mono);font-size:8.5px;letter-spacing:.14em;text-transform:uppercase}
+nav button.on{color:var(--purpura)}
+
+/* ---- ceremonia ---- */
+.velo{position:fixed;inset:0;background:rgba(8,6,12,.92);backdrop-filter:blur(6px);z-index:60;
+  display:none;align-items:center;justify-content:center;padding:24px}
+.velo.on{display:flex;animation:sube .5s ease}
+.ceremonia{max-width:420px;text-align:center;border:1px solid var(--oro);border-radius:14px;padding:34px 26px;background:var(--carbon)}
+.ceremonia .sello-g{width:64px;height:64px;margin:0 auto 14px;border:1px solid var(--oro);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-size:30px;color:var(--oro)}
+.ceremonia h3{font-family:var(--disp);font-size:26px;font-weight:500;margin-bottom:4px}
+.ceremonia .sub{font-family:var(--mono);font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--oro);margin-bottom:14px}
+.ceremonia p{font-size:15px;font-style:italic;color:var(--ceniza);margin-bottom:20px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:96px;background:var(--piedra);border:1px solid var(--purpura);
+  border-radius:8px;padding:10px 18px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;z-index:70;display:none}
+.toast.on{display:block;animation:sube .3s ease}
+</style>
+</head>
+<body>
+
+<header class="wrap">
+  <div class="marca">Cviertelr · Logia interior</div>
+  <h1>El Taller</h1>
+  <div class="grado-actual" id="cabGrado">Grado de Aprendiz</div>
+</header>
+
+<main class="wrap">
+
+<!-- ============ REGISTRO ============ -->
+<section class="pantalla on" id="p-registro">
+  <div class="piedra-caja">
+    <svg viewBox="0 0 120 120" id="svgPiedra" aria-hidden="true">
+      <polygon id="polyPiedra" fill="#241d31" stroke="#9d7ce0" stroke-width="1.4" stroke-linejoin="round"></polygon>
+      <polyline id="vetaPiedra" fill="none" stroke="#7c5cbf" stroke-width=".8" opacity=".5"></polyline>
+    </svg>
+    <div class="estado-piedra" id="piedraEstado">Piedra bruta</div>
+  </div>
+
+  <p class="eyebrow">El registro</p>
+  <h2>La medida del trabajo</h2>
+  <div class="tablero">
+    <div class="metrica"><div class="n" id="mHechos">0<small>/21</small></div><div class="et">Trabajos cerrados</div></div>
+    <div class="metrica"><div class="n" id="mRacha">0</div><div class="et">Racha de días</div></div>
+    <div class="metrica pred"><div class="n" id="mPred">—</div><div class="et">Miedo que predices</div></div>
+    <div class="metrica real"><div class="n" id="mReal">—</div><div class="et">Miedo que fue real</div></div>
+  </div>
+  <div class="brecha" id="brechaFrase">Aún no hay piedra labrada. La primera medición ocurre cuando cierras tu primer trabajo.</div>
+
+  <div class="grados-mapa" id="mapaGrados"></div>
+
+  <div class="bitacora">
+    <p class="eyebrow">Bitácora</p>
+    <h2>Lo último labrado</h2>
+    <div id="listaBitacora"></div>
+  </div>
+</section>
+
+<!-- ============ TRABAJOS ============ -->
+<section class="pantalla" id="p-trabajos">
+  <div class="pestanas" id="pestGrados"></div>
+  <p class="eyebrow" id="tEyebrow"></p>
+  <h2 id="tTitulo"></h2>
+  <p class="lema-grado" id="tLema"></p>
+  <div id="listaTrabajos"></div>
+</section>
+
+<!-- ============ BIBLIOTECA ============ -->
+<section class="pantalla" id="p-biblioteca">
+  <div class="pestanas" id="pestBiblio"></div>
+  <p class="eyebrow">La biblioteca</p>
+  <h2>Lo que se lee mientras se labra</h2>
+  <p class="lema-grado">Toca un volumen para ver por qué está aquí y marcar tu lectura.</p>
+  <div id="listaLibros"></div>
+</section>
+
+<!-- ============ LEGAJO ============ -->
+<section class="pantalla" id="p-legajo">
+  <p class="eyebrow">El legajo</p>
+  <h2>Custodia del registro</h2>
+  <div class="caja">
+    <h3>Respaldo</h3>
+    <p>Tu registro vive solo en este dispositivo. Guarda una copia antes de cambiar de teléfono o reinstalar.</p>
+    <button class="btn" id="btnExportar">Descargar respaldo (.json)</button>
+    <button class="btn fant" id="btnImportar">Restaurar desde respaldo</button>
+    <input type="file" id="fileImport" accept="application/json" style="display:none">
+  </div>
+  <div class="caja">
+    <h3>Volver a la piedra bruta</h3>
+    <p>Borra todo el registro: trabajos, mediciones y lecturas. No se puede deshacer.</p>
+    <button class="btn fant" id="btnReset" style="border-color:var(--rojo);color:var(--rojo)">Borrar registro</button>
+  </div>
+  <p class="aviso">Este taller es un sistema conductual serio, pero no reemplaza terapia. Si el miedo te corta la vida más de lo que cualquier ejercicio mueve, la terapia cognitivo-conductual es la herramienta mayor — y este taller rinde aún mejor a su lado, no en su lugar.</p>
+</section>
+
+</main>
+
+<!-- ============ NAV ============ -->
+<nav>
+  <button data-p="registro" class="on"><svg viewBox="0 0 24 24"><path d="M3 12l9-8 9 8M5 10v10h5v-6h4v6h5V10"/></svg><span>Registro</span></button>
+  <button data-p="trabajos"><svg viewBox="0 0 24 24"><path d="M14 4l6 6-9 9H5v-6zM13 7l4 4"/></svg><span>Trabajos</span></button>
+  <button data-p="biblioteca"><svg viewBox="0 0 24 24"><path d="M4 19V5a1 1 0 011-1h4v16H5a1 1 0 01-1-1zM9 4h5v16H9zM17 5l3 .8-3.8 14.5-3-.8z"/></svg><span>Biblioteca</span></button>
+  <button data-p="legajo"><svg viewBox="0 0 24 24"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/></svg><span>Legajo</span></button>
+</nav>
+
+<!-- ============ CEREMONIA ============ -->
+<div class="velo" id="velo">
+  <div class="ceremonia">
+    <div class="sello-g" id="cerSello">∴</div>
+    <h3 id="cerTitulo"></h3>
+    <div class="sub" id="cerSub"></div>
+    <p id="cerTexto"></p>
+    <button class="btn" id="cerBtn">Entrar al grado</button>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+"use strict";
+var KEY="el-taller-v2";
+
+/* ==================== DATOS ==================== */
+var GRADOS=[
+ {id:"aprendiz",num:"I",nombre:"Aprendiz",lema:"Sostener el cincel",
+  intro:"Siete trabajos breves, con libreto. Cada uno te hace predecir cuánto vas a sufrir y medir cuánto sufriste de verdad. Esa distancia es todo."},
+ {id:"companero",num:"II",nombre:"Compañero",lema:"Asentar la piedra",
+  intro:"Ya sostienes el cincel. Ahora el trabajo es más largo y el golpe va hacia adentro: sostener la conversación, ablandar al juez, soltar el chiste que tapa."},
+ {id:"maestro",num:"III",nombre:"Maestro",lema:"La piedra cúbica",
+  intro:"Soltar el libreto. El Maestro no hace la exposición: habita la sala sin plan, elige mostrarse, y devuelve el oficio enseñándolo."}
+];
+var TRABAJOS={
+ aprendiz:[
+  {t:"El mapa del miedo",l:"Antes de labrar, mirar la piedra",
+   d:"Escribe una lista de situaciones sociales que evitas y puntúa cada una de 0 a 10 según el miedo que te produce. Ordénalas de menor a mayor. Ese es tu mapa de cantera: de ahí salen los próximos trabajos.",
+   p:"Tú cuantificas los riesgos emocionales por instinto. Aquí ese hábito juega a tu favor: lo volvemos herramienta."},
+  {t:"El saludo",l:"Un golpe de cincel, limpio",
+   d:"Saluda a alguien con quien normalmente no cruzarías palabra —vecino, cajero, alguien en la micro— mirándolo a los ojos. Solo el saludo. No necesitas conversación.",
+   p:"El perro ladra fuerte antes de saltos chicos. Este trabajo existe para medir cuánto exagera."},
+  {t:"Cazar la voz",l:"La que negocia bajito",
+   d:"Durante el día, atrapa tres veces a la voz que te disuade («mejor no», «vas a quedar mal», «huele mal este wn») y anótala textual. No la discutas todavía: solo cázala y déjala por escrito.",
+   p:"Lo que se escribe deja de gobernar en la sombra. Es el primer paso de la defusión que profundizarás en Compañero."},
+  {t:"Una pregunta",l:"Abrir la puerta un dedo",
+   d:"Hazle una pregunta a un desconocido: la hora, una dirección, una recomendación en una tienda. Antes, predice tu miedo. Después, mide el real.",
+   p:"La pregunta tiene libreto incorporado: empieza y termina sola. Perfecta para entrenar la entrada sin exigir la permanencia."},
+  {t:"El cumplido",l:"Dar algo y quedarse",
+   d:"Da un cumplido genuino y específico a alguien —y quédate a escuchar la respuesta completa, sin escapar con un chiste ni mirando el celular.",
+   p:"Quedarse al después es la parte que tu humor suele cortar. Aquí el trabajo es el silencio posterior, no el cumplido."},
+  {t:"La misión",l:"El truco de Don Carleone",
+   d:"Entra a un espacio social con un para qué concreto (conseguir un dato, conocer a una persona, cerrar algo) y suelta una sola muleta: el humo, las vueltas previas, el rincón seguro.",
+   p:"Arriba del escenario ya lo haces: entras con papel y libreto. Este trabajo le presta ese libreto al Carlos de la calle."},
+  {t:"La permanencia",l:"Diez minutos después del impulso",
+   d:"En una situación social, identifica el momento exacto en que quieres irte — y quédate diez minutos más. Mide el miedo al impulso y el miedo al minuto diez.",
+   p:"El miedo cede al quedarte, no al huir. Esa es la ley técnica de toda la exposición, y aquí la compruebas en tu propio cuerpo."}
+ ],
+ companero:[
+  {t:"La conversación que dura",l:"Tres turnos sin escape",
+   d:"Sostén una conversación de al menos tres idas y vueltas con alguien fuera de tu círculo. No importa el brillo: importa no cortar tú primero.",
+   p:"En Aprendiz entrenaste la entrada. Ahora entrenas la permanencia en el diálogo — donde tu voz negociadora ofrece la salida de emergencia."},
+  {t:"La voz, por escrito",l:"El juicio y su contraprueba",
+   d:"Cuando dispare la voz («huele mal este wn», «no le interesas»), escríbela textual. Al lado, anota la evidencia real a favor y en contra. Cierra con un veredicto de una línea.",
+   p:"Es el método de reestructuración cognitiva aplicado a tu patrón exacto: la catastrofización pierde en tribunal con pruebas."},
+  {t:"El error a propósito",l:"Fallar y quedarse",
+   d:"Comete un fallo social menor adrede —pedir algo que no venden, equivocarte de nombre y corregirte, trastabillar una frase— y quédate a ver qué pasa de verdad.",
+   p:"Tu vara es brutal: exige cero errores. Este trabajo demuestra que el mundo cobra los errores mucho más barato que tu juez interno."},
+  {t:"La opinión propia",l:"Decir sin suavizar",
+   d:"En una conversación, di una opinión que quizá no comparten — y no la disuelvas de inmediato con un chiste ni con un «pero igual no sé».",
+   p:"El humor es tu deflector reflejo antes de la vulnerabilidad. Aquí no se prohíbe el chiste: solo se retrasa hasta después de sostener la opinión."},
+  {t:"El silencio habitado",l:"Tres segundos sin taparlo",
+   d:"Deja correr un silencio de tres segundos en una conversación sin llenarlo con humor ni con relleno. Respira. Deja que el otro lo llene, o que no lo llene nadie.",
+   p:"El silencio no es fracaso de la conversación: es parte de ella. Los introvertidos de Cain lo saben; el escenario te enseñó lo contrario."},
+  {t:"La autocompasión medida",l:"La vara del hermano",
+   d:"Tras una interacción que salió dura, escribe lo que le dirías a un hermano de tu tribu que hubiera hecho exactamente lo mismo. Léetelo. Esa es tu nueva vara.",
+   p:"Neff lo demuestra: la autocompasión no ablanda el trabajo, lo sostiene. La vara brutal produce abandono, no excelencia."},
+  {t:"La misión sostenida",l:"Sala grande, sin muletas",
+   d:"La misión de Aprendiz, pero mayor: un espacio más exigente, más tiempo dentro, y sin ninguna muleta — ni humo, ni celular, ni rincón.",
+   p:"El cierre del grado: todo lo anterior junto, en una sola pieza. Si el Aprendiz sostuvo el cincel, el Compañero asienta la piedra."}
+ ],
+ maestro:[
+  {t:"El estatus a voluntad",l:"Jugar alto, jugar bajo",
+   d:"En una misma jornada, juega deliberadamente alto estatus en una interacción (ocupar espacio, hablar lento, sostener la mirada) y bajo estatus en otra (ceder, preguntar, dejarte enseñar). Nota qué te cuesta más.",
+   p:"Johnstone en estado puro: el estatus es un juego que se elige, no una condena. Don Carleone ya lo juega en escena; ahora lo juega Carlos."},
+  {t:"Sin libreto",l:"Entrar desnudo",
+   d:"Entra a un espacio social sin ningún para qué preparado. Nada de misión, nada de plan. Solo estar, y responder a lo que la sala traiga.",
+   p:"Lo opuesto exacto al truco que te trajo hasta aquí. El Maestro ya no necesita el papel: confía en que sabrá improvisar la escena."},
+  {t:"La vulnerabilidad elegida",l:"Mostrarse a la tribu",
+   d:"Comparte con alguien de tu tribu chica algo verdadero y expuesto — un miedo, un deseo, algo que normalmente cubrirías con ironía. Elegido, no forzado.",
+   p:"Tu valor de Presencia: estar con los tuyos y ser visto por ellos. Ser visto de verdad exige mostrar algo que podría doler."},
+  {t:"El «no» limpio",l:"Sin sobre-explicar",
+   d:"Declina algo que no quieres hacer con una frase corta, sin tres justificaciones ni un chiste que lo amortigüe. «No puedo esta vez, gracias por pensar en mí» basta.",
+   p:"El no limpio es una frontera de la Honestidad: no engañarte sobre lo que importa incluye no decir sí por miedo al costo del no."},
+  {t:"El conflicto sostenido",l:"Discrepar y quedarse",
+   d:"Cuando surja un desacuerdo real, plantéalo de frente y quédate en la conversación atravesando la tensión, sin huir ni ceder solo para que termine.",
+   p:"La lealtad sin voz propia se vuelve sumisión. El conflicto sostenido con respeto es lo que distingue a la hermandad del simple acuerdo."},
+  {t:"Tender un puente",l:"Solo si lo eliges",
+   d:"Si hay una conexión que se enfrió y que aún pesa, da un paso pequeño hacia ella: un mensaje, un gesto. Sin expectativa de resultado. Este trabajo es opcional en su objeto, no en su forma: si no es esa persona, elige otra puerta que lleve tiempo cerrada.",
+   p:"El resultado no te pertenece; el gesto sí. Y el gesto es coherente con tu Lealtad: no soltar del todo a quienes dejaste entrar."},
+  {t:"Transmitir",l:"El oficio como regalo",
+   d:"Enseña algo de lo aprendido: en tu mesa de juego, en el set, o ayudando a alguien con su propio perro que ladra. El Maestro cierra el círculo formando a otro.",
+   p:"La piedra cúbica no se guarda: se asienta en un muro junto a otras. La habilidad deja de ser supervivencia y se vuelve ofrenda a la Hermandad."}
+ ]
+};
+var LIBROS=[
+ /* Aprendiz */
+ {id:"antony",g:"aprendiz",tt:"The Shyness and Social Anxiety Workbook",au:"Martin M. Antony & Richard P. Swinson",tag:"Manual técnico",
+  pq:"El fundamento clínico de todo este taller: cómo se construye una jerarquía de exposición y por qué el miedo cede al quedarte, no al huir.",
+  tuyo:"Léelo en paralelo a los trabajos de Aprendiz. El capítulo de exposición es el plano de tu cantera."},
+ {id:"hendriksen",g:"aprendiz",tt:"How to Be Yourself",au:"Ellen Hendriksen",tag:"El monólogo interno",
+  pq:"Una psicóloga clínica desarma la ansiedad social pieza por pieza, con foco en el crítico interior y en cómo la atención vuelta hacia adentro alimenta el miedo.",
+  tuyo:"Va directo a tu voz negociadora. Hendriksen la llama por su nombre y enseña a girarle la atención hacia afuera."},
+ {id:"burns",g:"aprendiz",tt:"Sentirse bien (Feeling Good)",au:"David D. Burns",tag:"Distorsiones cognitivas",
+  pq:"El clásico de la terapia cognitiva: un catálogo de las trampas del pensamiento —catastrofizar, leer mentes, filtrar lo negativo— y el método para desmontarlas por escrito.",
+  tuyo:"Tu trabajo 3, «Cazar la voz», es Burns en miniatura. Aquí está la caja de herramientas completa."},
+ {id:"seneca",g:"aprendiz",tt:"Cartas a Lucilio",au:"Séneca",tag:"Dominio público",
+  pq:"Cartas breves de un estoico a su discípulo: sobre el miedo que sufre por adelantado, el juicio ajeno y la diferencia entre lo que pasa y lo que tememos que pase.",
+  tuyo:"Séneca escribió tu mecánica central hace dos mil años: sufrimos más en la imaginación que en la realidad. Tu registro lo mide en números."},
+ {id:"marco",g:"aprendiz",tt:"Meditaciones",au:"Marco Aurelio",tag:"Dominio público",
+  pq:"El diario privado de un emperador que se entrena a sí mismo cada mañana: notas breves para no ser gobernado por la opinión ajena ni por el propio ruido.",
+  tuyo:"Formato perfecto para la micro y los turnos del terminal: entradas de un minuto. Un cantero romano puliendo su propia piedra."},
+ {id:"ficha-jerarquia",g:"aprendiz",tt:"Ficha del Taller · La jerarquía de exposición",au:"El Maestro Cantero",tag:"Ficha práctica",
+  pq:"Cómo convertir tu mapa del miedo en una escalera de trabajos a tu medida, cuando los siete de cada grado te queden chicos.",
+  tuyo:"Léela después del trabajo 1. Con ella puedes fabricar tus propios trabajos para siempre.",
+  ficha:"<p><strong>1. La materia prima.</strong> Toma tu mapa del miedo (trabajo 1): situaciones puntuadas de 0 a 10. Una jerarquía es ese mapa ordenado en escalera, del 2 al 9.</p><p><strong>2. La regla del peldaño.</strong> Trabaja siempre en el rango 4–6: lo bastante incómodo para labrar, lo bastante posible para quedarte. Bajo 3 no talla; sobre 7 se huye, y huir enseña lo contrario.</p><p><strong>3. La doble medición.</strong> Antes: predice el miedo. Después: mide el real. La brecha entre ambos es la prueba física contra la catástrofe imaginada. Sin medición no hay taller, hay anécdota.</p><p><strong>4. La repetición.</strong> Un peldaño se considera labrado cuando lo repites hasta que el miedo real baja a la mitad de la primera vez. Entonces —y solo entonces— subes.</p><p><strong>5. La regla de oro.</strong> Nunca abandones un peldaño en el pico del miedo. Quédate hasta que baje aunque sea un punto: el sistema nervioso solo aprende del final de la escena.</p>"},
+ /* Compañero */
+ {id:"neff",g:"companero",tt:"Sé amable contigo mismo",au:"Kristin Neff",tag:"La vara",
+  pq:"La investigadora que fundó el campo de la autocompasión demuestra con datos que tratarse como a un buen amigo sostiene el esfuerzo mejor que el látigo.",
+  tuyo:"Escrito para tu vara brutal. El trabajo 6 de Compañero sale directamente de este libro."},
+ {id:"harris",g:"companero",tt:"La trampa de la felicidad",au:"Russ Harris",tag:"ACT · Defusión",
+  pq:"La guía más clara de la terapia de aceptación y compromiso: cómo despegarse de los pensamientos sin pelearlos, y actuar según valores aunque el miedo siga ahí.",
+  tuyo:"Tú ya hiciste el ejercicio de valores — Lealtad, Presencia, Honestidad y los demás. Harris es el manual de cómo caminar hacia ellos con el perro ladrando al lado."},
+ {id:"cain",g:"companero",tt:"El poder de los introvertidos (Quiet)",au:"Susan Cain",tag:"Temperamento",
+  pq:"Un alegato documentado a favor de los templados: por qué la profundidad, la escucha y el silencio son fuerzas sociales, no defectos a corregir.",
+  tuyo:"Responde tu vieja pregunta sobre si hay que volverse otro para pertenecer. No: se pertenece desde el propio temperamento."},
+ {id:"clear",g:"companero",tt:"Hábitos atómicos",au:"James Clear",tag:"Sostener el trabajo",
+  pq:"La mecánica de los hábitos: señal, anhelo, respuesta, recompensa. Cómo hacer que el trabajo diario ocurra incluso las semanas en que la voluntad no aparece.",
+  tuyo:"Compañero es el grado de la constancia. Clear es el andamio para que la racha sobreviva a los turnos del terminal."},
+ {id:"brown",g:"companero",tt:"Daring Greatly (Frágil)",au:"Brené Brown",tag:"Ser visto",
+  pq:"Dos décadas de investigación sobre vergüenza y vulnerabilidad: mostrarse sin garantías no es debilidad, es el precio de entrada a la conexión real.",
+  tuyo:"El puente exacto entre Compañero y Maestro: prepara la vulnerabilidad elegida del grado III."},
+ {id:"ficha-defusion",g:"companero",tt:"Ficha del Taller · La voz no eres tú",au:"El Maestro Cantero",tag:"Ficha práctica",
+  pq:"Tres técnicas de defusión para usar en el momento, cuando la voz negociadora aparece en medio de la escena y no hay papel a mano.",
+  tuyo:"El complemento de calle del trabajo 2. Para la micro, la fila, el pasillo.",
+  ficha:"<p><strong>1. Ponerle nombre.</strong> Cuando dispare, di por dentro: «ahí está la voz». No «estoy pensando que…» sino «la voz dice que…». Ese giro gramatical abre un centímetro de distancia — y en ese centímetro cabes tú.</p><p><strong>2. La voz en falsete.</strong> Repite el pensamiento exacto con una voz ridícula mental — el pato, el locutor de infomercial. No cambia el contenido: cambia la autoridad. Es tu propio oficio de comediante usado como herramienta clínica.</p><p><strong>3. El radio de la micro.</strong> Trata la voz como una radio de fondo que no puedes apagar pero sí dejar de atender. No discutas con el locutor: vuelve la atención a la escena real — la persona, la sala, el para qué. La atención es el único dial que controlas.</p><p><strong>El principio.</strong> La defusión no busca callar la voz ni ganarle. Busca que deje de manejar. Puede ir en el asiento de atrás, opinando todo el viaje — pero el volante es tuyo.</p>"},
+ /* Maestro */
+ {id:"johnstone",g:"maestro",tt:"Impro",au:"Keith Johnstone",tag:"Estatus y juego",
+  pq:"El texto sagrado de la improvisación teatral: estatus, espontaneidad, aceptar ofertas. Escrito para actores, funciona como manual encubierto de vida social.",
+  tuyo:"El puente exacto entre Don Carleone y el Carlos de las fiestas. El trabajo 1 de Maestro es su capítulo de estatus llevado a la calle."},
+ {id:"montaigne",g:"maestro",tt:"Ensayos (selección)",au:"Michel de Montaigne",tag:"Dominio público",
+  pq:"El inventor del ensayo conversa consigo mismo sobre la amistad, el miedo, la muerte y el arte de conversar — con una honestidad que todavía desarma.",
+  tuyo:"Empieza por «De la amistad» y «Del arte de conversar». Montaigne perdió a su Shappa —se llamaba La Boétie— y escribió sobre ese vacío las páginas más honestas del libro."},
+ {id:"frankl",g:"maestro",tt:"El hombre en busca de sentido",au:"Viktor Frankl",tag:"Sentido",
+  pq:"Un psiquiatra sobrevive al campo de concentración y funda una escuela sobre lo que descubrió: quien tiene un para qué soporta casi cualquier cómo.",
+  tuyo:"Tu Reverencia ante lo velado, en su forma más alta. Y la confirmación mayor de tu propio truco: el para qué no es una muleta — es el timón."},
+ {id:"epicteto",g:"maestro",tt:"Enquiridión",au:"Epicteto",tag:"Dominio público",
+  pq:"Un manual estoico de bolsillo, dictado por un esclavo liberto: la división tajante entre lo que depende de ti y lo que no, aplicada a cada escena de la vida.",
+  tuyo:"El trabajo 6 —tender un puente sin dueño del resultado— es Epicteto puro: el gesto es tuyo, la respuesta no."},
+ {id:"cabane",g:"maestro",tt:"El mito del carisma",au:"Olivia Fox Cabane",tag:"Presencia",
+  pq:"El carisma descompuesto en tres conductas entrenables —presencia, poder, calidez— con ejercicios concretos para cada una.",
+  tuyo:"Desmonta la idea de que el magnetismo es un don de cuna. Tu valor de Presencia, convertido en técnica."},
+ {id:"ficha-estatus",g:"maestro",tt:"Ficha del Taller · Jugar estatus sin perderte",au:"El Maestro Cantero",tag:"Ficha práctica",
+  pq:"Las palancas físicas del estatus según Johnstone, reducidas a lo que puedes ajustar en diez segundos antes de entrar a cualquier sala.",
+  tuyo:"El apunte de campo del trabajo 1 de Maestro. Para leer en la puerta, no en el sillón.",
+  ficha:"<p><strong>Las palancas de estatus alto.</strong> Ocupar el espacio propio sin pedir permiso. Hablar más lento de lo que pide el nervio. Sostener la mirada un segundo más del reflejo. Dejar quietas las manos. Cabeza inmóvil al hablar.</p><p><strong>Las palancas de estatus bajo.</strong> Ceder el paso y el turno. Preguntar y dejarse enseñar. Tocar lo propio (pelo, cara, ropa). Reír primero. Son igual de valiosas: el bajo estatus voluntario desarma y acerca.</p><p><strong>La regla del Maestro.</strong> El estatus no es jerarquía: es un sube-y-baja que se juega en cada frase. El ansioso queda pegado en bajo involuntario; el arrogante, en alto rígido. El Maestro elige palanca según la escena — y puede regalar estatus, que es la jugada más alta de todas.</p><p><strong>El truco de campo.</strong> Antes de entrar: dos respiraciones lentas, hombros abajo, y decide tu apertura — ¿alto o bajo? Decidirlo ya te saca del automático. Lo demás es escena.</p>"}
+];
+var UMBRAL=5, TOTAL=7;
+
+/* ==================== ESTADO ==================== */
+var estado=null;
+function base(){return {v:2,startedAt:new Date().toISOString(),grado:"aprendiz",
+  trabajos:{aprendiz:{},companero:{},maestro:{}},biblio:{},ceremonias:{}};}
+function guardar(){try{localStorage.setItem(KEY,JSON.stringify(estado));}catch(e){}}
+function migrar(){
+  /* busca registros de la versión anterior en cualquier llave que contenga "taller" */
+  try{
+    for(var i=0;i<localStorage.length;i++){
+      var k=localStorage.key(i);
+      if(k===KEY||!/taller/i.test(k))continue;
+      var v;try{v=JSON.parse(localStorage.getItem(k));}catch(e){continue;}
+      if(!v||typeof v!=="object"||!v.days)continue;
+      var e2=base();
+      e2.startedAt=v.startedAt||e2.startedAt;
+      var n=0;
+      Object.keys(v.days).forEach(function(dk){
+        var d=v.days[dk];if(!d)return;
+        var idx=parseInt(String(dk).replace(/\D/g,""),10);
+        if(!idx||idx<1||idx>7)return;
+        e2.trabajos.aprendiz[idx-1]={pred:(d.pred!=null?d.pred:null),real:(d.real!=null?d.real:null),
+          nota:d.nota||"",fecha:d.fecha||d.date||v.startedAt||new Date().toISOString(),estado:"hecho"};
+        n++;
+      });
+      if(n>0){if(n>=UMBRAL){e2.grado="companero";e2.ceremonias.companero=true;}return e2;}
+    }
+  }catch(e){}
+  return null;
+}
+function cargar(){
+  try{var raw=localStorage.getItem(KEY);if(raw){estado=JSON.parse(raw);
+    if(!estado.trabajos)estado.trabajos={aprendiz:{},companero:{},maestro:{}};
+    if(!estado.biblio)estado.biblio={};if(!estado.ceremonias)estado.ceremonias={};return;}}catch(e){}
+  estado=migrar();
+  if(estado){guardar();setTimeout(function(){toast("Registro de Aprendiz recuperado");},600);}
+  else{estado=base();guardar();}
+}
+
+/* ==================== CÁLCULOS ==================== */
+function hechosDe(g){var t=estado.trabajos[g]||{};return Object.keys(t).filter(function(k){return t[k]&&t[k].estado==="hecho";}).length;}
+function totalHechos(){return hechosDe("aprendiz")+hechosDe("companero")+hechosDe("maestro");}
+function abiertoGrado(g){
+  if(g==="aprendiz")return true;
+  if(g==="companero")return hechosDe("aprendiz")>=UMBRAL;
+  return hechosDe("companero")>=UMBRAL;
+}
+function entradas(){
+  var out=[];GRADOS.forEach(function(g){
+    var t=estado.trabajos[g.id]||{};
+    Object.keys(t).forEach(function(k){var d=t[k];if(d&&d.estado==="hecho")
+      out.push({g:g.nombre,tt:(TRABAJOS[g.id][k]||{}).t||"Trabajo",pred:d.pred,real:d.real,nota:d.nota,fecha:d.fecha});});
+  });
+  out.sort(function(a,b){return new Date(b.fecha)-new Date(a.fecha);});return out;
+}
+function promedios(){
+  var e=entradas().filter(function(x){return x.pred!=null&&x.real!=null;});
+  if(!e.length)return null;
+  var p=0,r=0;e.forEach(function(x){p+=x.pred;r+=x.real;});
+  return {pred:p/e.length,real:r/e.length,n:e.length};
+}
+function racha(){
+  var dias={};entradas().forEach(function(e){dias[new Date(e.fecha).toDateString()]=1;});
+  var n=0,d=new Date();
+  if(!dias[d.toDateString()]){d.setDate(d.getDate()-1);if(!dias[d.toDateString()])return 0;}
+  while(dias[d.toDateString()]){n++;d.setDate(d.getDate()-1);}
+  return n;
+}
+function fraseBrecha(){
+  var p=promedios();
+  if(!p)return "Aún no hay piedra labrada. La primera medición ocurre cuando cierras tu primer trabajo.";
+  var b=p.pred-p.real;
+  if(b>=2.5)return "Predices "+p.pred.toFixed(1)+" y vives "+p.real.toFixed(1)+". Tu catástrofe cobra caro por adelantado — y la realidad casi nunca pasa la cuenta.";
+  if(b>=1)return "Brecha de "+b.toFixed(1)+" puntos a favor de la realidad. La voz exagera, y ahora tienes los números para probárselo.";
+  if(b>-1)return "Tu predicción y tu realidad casi coinciden. Buen ojo de cantero: ahora el trabajo es subir de peldaño.";
+  return "La realidad pesó más que tu predicción. Pasa: significa que estás eligiendo piedras grandes. Baja un peldaño y repite — quedarse es lo que enseña.";
+}
+
+/* ==================== PIEDRA ==================== */
+var BRUTA=[[60,14],[88,26],[104,52],[98,84],[74,106],[42,102],[20,76],[24,42]];
+var CUBO =[[60,18],[95,35],[95,85],[60,102],[25,85],[25,35],[25,35],[60,18]];
+function pintarPiedra(){
+  var p=Math.min(1,totalHechos()/21);
+  var pts=BRUTA.map(function(b,i){var c=CUBO[i];
+    return (b[0]+(c[0]-b[0])*p).toFixed(1)+","+(b[1]+(c[1]-b[1])*p).toFixed(1);}).join(" ");
+  document.getElementById("polyPiedra").setAttribute("points",pts);
+  var veta=p<1?("34,"+(60+p*10)+" 60,"+(48+p*14)+" 88,"+(64-p*8)):"";
+  document.getElementById("vetaPiedra").setAttribute("points",veta);
+  var est="Piedra bruta";
+  if(p>=1)est="Piedra cúbica";else if(p>=.66)est="Piedra en escuadra";else if(p>=.33)est="Piedra desbastada";
+  document.getElementById("piedraEstado").textContent=est+" · "+totalHechos()+" de 21";
+}
+
+/* ==================== REGISTRO ==================== */
+function pintarRegistro(){
+  document.getElementById("mHechos").innerHTML=totalHechos()+"<small>/21</small>";
+  document.getElementById("mRacha").textContent=racha();
+  var p=promedios();
+  document.getElementById("mPred").textContent=p?p.pred.toFixed(1):"—";
+  document.getElementById("mReal").textContent=p?p.real.toFixed(1):"—";
+  document.getElementById("brechaFrase").textContent=fraseBrecha();
+  var g=GRADOS.filter(function(x){return x.id===estado.grado;})[0]||GRADOS[0];
+  document.getElementById("cabGrado").textContent="Grado de "+g.nombre+" · "+g.lema;
+  var mapa=document.getElementById("mapaGrados");mapa.innerHTML="";
+  GRADOS.forEach(function(gr){
+    var abierto=abiertoGrado(gr.id),h=hechosDe(gr.id);
+    var div=document.createElement("div");
+    div.className="gr"+(gr.id===estado.grado?" activo":"")+(h>=TOTAL?" hecho":"")+(!abierto?" cerrado":"");
+    div.innerHTML='<div class="sello">'+gr.num+'</div><div class="info"><div class="nom">'+gr.nombre+'</div>'+
+      '<div class="sub">'+gr.lema+'</div><div class="barra"><i style="width:'+(h/TOTAL*100)+'%"></i></div></div>'+
+      '<div class="cifra">'+(abierto?(h+"/"+TOTAL):"sellado")+'</div>';
+    if(abierto)div.addEventListener("click",function(){gradoVista=gr.id;irA("trabajos");});
+    mapa.appendChild(div);
+  });
+  var lb=document.getElementById("listaBitacora"),es=entradas();lb.innerHTML="";
+  if(!es.length){lb.innerHTML='<div class="vacio">La bitácora se escribe sola: cada trabajo cerrado deja aquí su marca.</div>';return;}
+  es.slice(0,6).forEach(function(e){
+    var d=document.createElement("div");d.className="entrada";
+    var f=new Date(e.fecha),ff=f.toLocaleDateString("es-CL",{day:"numeric",month:"short"});
+    d.innerHTML='<div class="meta"><span>'+e.g+'</span><span>'+ff+'</span></div><div class="tt">'+e.tt+'</div>'+
+      '<div class="cifras"><span class="p">predijo <b>'+(e.pred!=null?e.pred:"—")+'</b></span> · <span class="r">vivió <b>'+(e.real!=null?e.real:"—")+'</b></span></div>'+
+      (e.nota?'<div class="nota">«'+e.nota+'»</div>':"");
+    lb.appendChild(d);
+  });
+}
+
+/* ==================== TRABAJOS ==================== */
+var gradoVista="aprendiz";
+function pintarPestanas(){
+  var c=document.getElementById("pestGrados");c.innerHTML="";
+  GRADOS.forEach(function(g){
+    var b=document.createElement("button");
+    var abierto=abiertoGrado(g.id);
+    b.className="pest"+(g.id===gradoVista?" on":"")+(!abierto?" lock":"");
+    b.textContent=(abierto?"":"🔒 ")+g.nombre;
+    b.addEventListener("click",function(){
+      if(!abierto){toast("Sellado: cierra "+UMBRAL+" trabajos del grado anterior");return;}
+      gradoVista=g.id;pintarTrabajos();
+    });
+    c.appendChild(b);
+  });
+}
+function pintarTrabajos(){
+  pintarPestanas();
+  var g=GRADOS.filter(function(x){return x.id===gradoVista;})[0];
+  document.getElementById("tEyebrow").textContent="Grado "+g.num+" · "+g.nombre;
+  document.getElementById("tTitulo").textContent=g.lema;
+  document.getElementById("tLema").textContent=g.intro;
+  var cont=document.getElementById("listaTrabajos");cont.innerHTML="";
+  TRABAJOS[gradoVista].forEach(function(tr,i){
+    var reg=estado.trabajos[gradoVista][i]||null;
+    var est=reg?reg.estado:"nuevo";
+    var card=document.createElement("div");
+    card.className="trabajo"+(est==="hecho"?" hecho":est==="curso"?" curso":"");
+    var chip=est==="hecho"?'<span class="chip hecho">labrado</span>':est==="curso"?'<span class="chip curso">en curso</span>':'<span class="chip">por labrar</span>';
+    var html='<div class="cab"><div class="num">'+(est==="hecho"?"✓":(i+1))+'</div>'+
+      '<div class="t"><div class="tt">'+tr.t+'</div><div class="lm">'+tr.l+'</div></div>'+chip+'</div>'+
+      '<div class="cuerpo"><p class="desc">'+tr.d+'</p><p class="porque">'+tr.p+'</p><div class="zona"></div></div>';
+    card.innerHTML=html;
+    card.querySelector(".cab").addEventListener("click",function(){
+      var abre=!card.classList.contains("abierto");
+      cont.querySelectorAll(".trabajo.abierto").forEach(function(x){x.classList.remove("abierto");});
+      if(abre){card.classList.add("abierto");pintarZona(card.querySelector(".zona"),gradoVista,i);}
+    });
+    cont.appendChild(card);
+  });
+}
+function pintarZona(zona,g,i){
+  var reg=estado.trabajos[g][i]||null;
+  var est=reg?reg.estado:"nuevo";
+  zona.innerHTML="";
+  if(est==="hecho"){
+    var b=reg.pred!=null&&reg.real!=null?(reg.pred-reg.real):null;
+    var fr=b==null?"Trabajo cerrado.":(b>=1?"Predijiste "+reg.pred+", viviste "+reg.real+". La piedra era más blanda que el miedo.":(b>-1?"Predijiste "+reg.pred+", viviste "+reg.real+". Ojo calibrado.":"Predijiste "+reg.pred+", viviste "+reg.real+". Piedra dura — quedarse igual cuenta doble."));
+    zona.innerHTML='<div class="resultado">'+fr+(reg.nota?'<br><span class="mini">nota</span> «'+reg.nota+'»':"")+'</div>'+
+      '<button class="btn fant" data-a="rehacer">Volver a labrar este trabajo</button>';
+    zona.querySelector("[data-a=rehacer]").addEventListener("click",function(){
+      delete estado.trabajos[g][i];guardar();pintarTodo();pintarTrabajos();
+      var c=zona.closest(".trabajo");if(c){c.classList.add("abierto");}
+    });
+    return;
+  }
+  if(est==="curso"){
+    zona.innerHTML='<div class="campo"><label>Miedo que fue real <output>'+ (reg.real!=null?reg.real:5) +'</output></label>'+
+      '<input type="range" class="real" min="0" max="10" step="1" value="'+(reg.real!=null?reg.real:5)+'"></div>'+
+      '<div class="campo"><label>Nota de bitácora · opcional</label><textarea placeholder="Qué pasó de verdad, qué dijo la voz, qué aprendió el cantero…"></textarea></div>'+
+      '<button class="btn verde" data-a="cerrar">Cerrar trabajo</button>'+
+      '<button class="btn fant" data-a="soltar">Soltar sin cerrar</button>';
+    var rg=zona.querySelector("input");rg.addEventListener("input",function(){zona.querySelector("output").textContent=rg.value;});
+    zona.querySelector("[data-a=cerrar]").addEventListener("click",function(){
+      reg.real=parseInt(rg.value,10);reg.nota=zona.querySelector("textarea").value.trim().slice(0,300);
+      reg.estado="hecho";reg.fecha=new Date().toISOString();
+      estado.trabajos[g][i]=reg;guardar();
+      pintarTodo();pintarTrabajos();revisarCeremonia();
+    });
+    zona.querySelector("[data-a=soltar]").addEventListener("click",function(){
+      delete estado.trabajos[g][i];guardar();pintarTrabajos();
+    });
+    return;
+  }
+  zona.innerHTML='<div class="campo"><label>Miedo que predices <output>5</output></label>'+
+    '<input type="range" min="0" max="10" step="1" value="5"></div>'+
+    '<button class="btn" data-a="empezar">Tomar el cincel</button>';
+  var r=zona.querySelector("input");r.addEventListener("input",function(){zona.querySelector("output").textContent=r.value;});
+  zona.querySelector("[data-a=empezar]").addEventListener("click",function(){
+    estado.trabajos[g][i]={pred:parseInt(r.value,10),real:null,nota:"",fecha:new Date().toISOString(),estado:"curso"};
+    guardar();pintarTrabajos();
+    var cards=document.querySelectorAll("#listaTrabajos .trabajo");
+    if(cards[i]){cards[i].classList.add("abierto");pintarZona(cards[i].querySelector(".zona"),g,i);}
+    toast("Trabajo en curso. Vuelve a cerrarlo cuando lo hayas vivido.");
+  });
+}
+
+/* ==================== CEREMONIA ==================== */
+function revisarCeremonia(){
+  var abre=null;
+  if(hechosDe("aprendiz")>=UMBRAL&&!estado.ceremonias.companero)abre="companero";
+  else if(hechosDe("companero")>=UMBRAL&&!estado.ceremonias.maestro)abre="maestro";
+  else if(totalHechos()>=21&&!estado.ceremonias.cubo)abre="cubo";
+  if(!abre)return;
+  var v=document.getElementById("velo");
+  if(abre==="cubo"){
+    document.getElementById("cerSello").textContent="■";
+    document.getElementById("cerTitulo").textContent="La piedra cúbica";
+    document.getElementById("cerSub").textContent="El taller queda en silencio";
+    document.getElementById("cerTexto").textContent="Veintiún trabajos. La piedra no desapareció: cambió de forma. Lo que sigue no es un grado — es asentarla en el muro, junto a las otras. El oficio ya es tuyo.";
+    document.getElementById("cerBtn").textContent="Cerrar el taller por hoy";
+    estado.ceremonias.cubo=true;
+  }else{
+    var g=GRADOS.filter(function(x){return x.id===abre;})[0];
+    document.getElementById("cerSello").textContent=g.num;
+    document.getElementById("cerTitulo").textContent="Grado de "+g.nombre;
+    document.getElementById("cerSub").textContent="El sello se abre";
+    document.getElementById("cerTexto").textContent=abre==="companero"
+      ?"Cinco trabajos labrados con tus propias manos. El Aprendiz sostuvo el cincel; al Compañero le toca asentar la piedra. Pasa."
+      :"El Compañero asentó la piedra. Al Maestro le queda lo más fino: soltar el libreto y devolver el oficio. Pasa.";
+    document.getElementById("cerBtn").textContent="Entrar al grado";
+    estado.ceremonias[abre]=true;estado.grado=abre;
+  }
+  guardar();v.classList.add("on");
+  document.getElementById("cerBtn").onclick=function(){
+    v.classList.remove("on");
+    if(abre!=="cubo"){gradoVista=abre;irA("trabajos");}
+    pintarTodo();
+  };
+}
+
+/* ==================== BIBLIOTECA ==================== */
+var biblioVista="aprendiz";
+function pintarBiblio(){
+  var c=document.getElementById("pestBiblio");c.innerHTML="";
+  GRADOS.forEach(function(g){
+    var b=document.createElement("button");
+    b.className="pest"+(g.id===biblioVista?" on":"");b.textContent=g.nombre;
+    b.addEventListener("click",function(){biblioVista=g.id;pintarBiblio();});
+    c.appendChild(b);
+  });
+  var lista=document.getElementById("listaLibros");lista.innerHTML="";
+  LIBROS.filter(function(l){return l.g===biblioVista;}).forEach(function(l){
+    var st=estado.biblio[l.id]||"pendiente";
+    var d=document.createElement("div");
+    d.className="libro"+(l.ficha?" ficha-t":(/dominio/i.test(l.tag)?" dp":""));
+    d.innerHTML='<div class="cab"><div class="lomo"></div><div class="t"><div class="tt">'+l.tt+'</div>'+
+      '<div class="au">'+l.au+'</div><div class="tag">'+l.tag+(st!=="pendiente"?" · "+st:"")+'</div></div></div>'+
+      '<div class="cuerpo"><p class="pq">'+l.pq+'</p><div class="tuyo">'+l.tuyo+'</div>'+
+      (l.ficha?'<div class="ficha-texto">'+l.ficha+'</div>':
+      '<div class="est-lectura">'+["pendiente","leyendo","leído"].map(function(s){
+        return '<button data-s="'+s+'" class="'+(st===s?"on":"")+'">'+s+'</button>';}).join("")+'</div>')+
+      '</div>';
+    d.querySelector(".cab").addEventListener("click",function(){d.classList.toggle("abierto");});
+    d.querySelectorAll(".est-lectura button").forEach(function(b){
+      b.addEventListener("click",function(ev){ev.stopPropagation();
+        estado.biblio[l.id]=b.getAttribute("data-s");guardar();pintarBiblio();});
+    });
+    lista.appendChild(d);
+  });
+}
+
+/* ==================== LEGAJO ==================== */
+document.getElementById("btnExportar").addEventListener("click",function(){
+  var blob=new Blob([JSON.stringify(estado,null,2)],{type:"application/json"});
+  var a=document.createElement("a");a.href=URL.createObjectURL(blob);
+  a.download="el-taller-respaldo-"+new Date().toISOString().slice(0,10)+".json";
+  document.body.appendChild(a);a.click();a.remove();
+});
+document.getElementById("btnImportar").addEventListener("click",function(){document.getElementById("fileImport").click();});
+document.getElementById("fileImport").addEventListener("change",function(ev){
+  var f=ev.target.files[0];if(!f)return;
+  var r=new FileReader();
+  r.onload=function(){try{var v=JSON.parse(r.result);
+    if(!v||!v.trabajos)throw 0;estado=v;guardar();pintarTodo();toast("Registro restaurado");
+  }catch(e){toast("El archivo no es un respaldo válido");}};
+  r.readAsText(f);ev.target.value="";
+});
+document.getElementById("btnReset").addEventListener("click",function(){
+  if(!confirm("Volver a la piedra bruta borra todo el registro. No se puede deshacer. ¿Seguro?"))return;
+  estado=base();guardar();gradoVista="aprendiz";pintarTodo();toast("Registro limpio");
+});
+
+/* ==================== NAV / UTIL ==================== */
+function irA(p){
+  document.querySelectorAll("section.pantalla").forEach(function(s){s.classList.remove("on");});
+  document.getElementById("p-"+p).classList.add("on");
+  document.querySelectorAll("nav button").forEach(function(b){b.classList.toggle("on",b.getAttribute("data-p")===p);});
+  if(p==="trabajos")pintarTrabajos();
+  if(p==="biblioteca")pintarBiblio();
+  if(p==="registro")pintarRegistro();
+  window.scrollTo({top:0});
+}
+document.querySelectorAll("nav button").forEach(function(b){
+  b.addEventListener("click",function(){irA(b.getAttribute("data-p"));});
+});
+var toastT=null;
+function toast(msg){var t=document.getElementById("toast");t.textContent=msg;t.classList.add("on");
+  clearTimeout(toastT);toastT=setTimeout(function(){t.classList.remove("on");},2600);}
+function pintarTodo(){pintarPiedra();pintarRegistro();}
+
+/* ==================== ARRANQUE ==================== */
+cargar();
+if(!abiertoGrado(estado.grado))estado.grado="aprendiz";
+gradoVista=estado.grado;
+pintarTodo();
+revisarCeremonia();
+
+/* registro del service worker: habilita la instalación real y el uso sin señal */
+if("serviceWorker" in navigator){
+  window.addEventListener("load",function(){
+    navigator.serviceWorker.register("sw.js").catch(function(){});
+  });
+}
+})();
+</script>
+</body>
+</html>
